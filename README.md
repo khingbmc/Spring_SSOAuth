@@ -12,14 +12,10 @@
 ## SSO Flow Diagram
 ![SSoFlowDiagram](/resource/saml2.0.png)
 
-## API Structure overview Plan
 
-<center>
-  <image src="resource/saml2.0.png" alt="saml2.0 work flow"/>
-</center>
 
 ## Dependencies ที่มีการใช้งาน
-### pom.xml useful dependency
+
 ```xml
     <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -33,12 +29,15 @@
 ```
 - freemarker ใช้สำหรับเรียกใช้ template HTML
 - jjwt ใช้สำหรับ json web token
+## Example JWT Tokens
+
+![SSoFlowDiagram](/resource/jwt.png)
 
 ### 💁🏻‍♂️ When you use service you send user info to authenticate with IDP Server (Our Service)
 
 # 👥Team Member
 
-|![](resource/kim.jpg) |![](resource/fluke.jpg) |![](resource/khing.jpg) | ![](resource/tor.jpg)  |
+|![](resource/kim.jpg=100x100) |![](resource/fluke.jpg=100x100) |![](resource/khing.jpg=100x100) | ![](resource/tor.jpg=100x100)  |
 | :-: | :-: | :-: | :-: |
 | โฆษิต โฆษิตศรีคุณากร |พีรพล อ่อนแฮน |รฐนนท์ จันทนะสุคนธ์|รัชภัทร เพิ่มพูล
 |60070008 |      60070067      |      60070079      | 60070083|
