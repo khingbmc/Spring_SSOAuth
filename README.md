@@ -37,7 +37,7 @@
 
 # 👥Team Member
 
-|<a href=""><img src="resource/kim.jpg" width="100px"></a>  |![](resource/fluke.jpg=100x100) |![](resource/khing.jpg=100x100) | ![](resource/tor.jpg=100x100)  |
+|<a href="https://github.com/KimKosit"><img src="resource/kim.jpg" width="100px"></a>  |<a href="https://github.com/pumy2517"><img src="resource/fluke.jpg" width="100px"></a>  |<a href="https://github.com/khingbmc"><img src="resource/khing.jpg" width="100px"></a>  | <a href="https://github.com/torasann"><img src="resource/tor.jpg" width="100px"></a>  |
 | :-: | :-: | :-: | :-: |
 | โฆษิต โฆษิตศรีคุณากร |พีรพล อ่อนแฮน |รฐนนท์ จันทนะสุคนธ์|รัชภัทร เพิ่มพูล
 |60070008 |      60070067      |      60070079      | 60070083|
