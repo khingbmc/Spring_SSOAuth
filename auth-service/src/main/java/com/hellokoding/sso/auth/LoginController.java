@@ -44,6 +44,7 @@ public class LoginController {
             return "login";
         }
         List<ServiceInstance> list = this.discoveryClient.getInstances("AUTH-SSO-SERVICE");
+        System.out.println(list.get(0).getHost());
         String token = JwtUtil.generateToken(signingKey, username);
         CookieUtil.create(httpServletResponse, jwtTokenCookieName, token, false, -1, list.get(0).getHost());
 
