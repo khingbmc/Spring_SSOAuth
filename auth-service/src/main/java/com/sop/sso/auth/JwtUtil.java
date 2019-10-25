@@ -1,4 +1,4 @@
-package com.hellokoding.sso.auth;
+package com.sop.sso.auth;
 
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;

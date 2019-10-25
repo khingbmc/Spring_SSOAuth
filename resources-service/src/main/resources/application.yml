@@ -9,7 +9,11 @@ server:
       enabled: true
   port: 8280
 eureka:
+  instance:
+    preferIpAddress: true
   client:
+    registerWithEureka: true
+    fetchRegistry: true
     serviceUrl:
       defaultZone: http://servicediscovery-env.bfbu3rys9v.us-east-2.elasticbeanstalk.com/eureka/
 #server:

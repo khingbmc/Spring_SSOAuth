@@ -1,4 +1,4 @@
-package com.hellokoding.sso.auth;
+package com.sop.sso.auth;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

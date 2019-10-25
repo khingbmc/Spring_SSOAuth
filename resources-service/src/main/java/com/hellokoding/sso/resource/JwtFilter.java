@@ -1,5 +1,6 @@
 package com.hellokoding.sso.resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -11,7 +12,12 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
     private static final String jwtTokenCookieName = "JWT-TOKEN";
     private static final String signingKey = "signingKey";
+    private HttpServletRequest request;
 
+    @Autowired
+    public void setRequest(HttpServletRequest request) {
+        this.request = request;
+    }
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String username = JwtUtil.getSubject(httpServletRequest, jwtTokenCookieName, signingKey);

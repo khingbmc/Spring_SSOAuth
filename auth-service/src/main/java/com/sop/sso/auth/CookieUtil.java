@@ -1,4 +1,4 @@
-package com.hellokoding.sso.auth;
+package com.sop.sso.auth;
 
 import org.springframework.web.util.WebUtils;
 
@@ -10,9 +10,9 @@ public class CookieUtil {
     public static void create(HttpServletResponse httpServletResponse, String name, String value, Boolean secure, Integer maxAge, String domain) {
         Cookie cookie = new Cookie(name, value);
         cookie.setSecure(secure);
-        cookie.setHttpOnly(true);
+        cookie.setHttpOnly(false);
         cookie.setMaxAge(maxAge);
-        cookie.setDomain(domain);
+//        cookie.setDomain(domain);
         cookie.setPath("/");
         httpServletResponse.addCookie(cookie);
     }
