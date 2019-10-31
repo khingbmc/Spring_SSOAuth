@@ -16,3 +16,13 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://servicediscovery-env.bfbu3rys9v.us-east-2.elasticbeanstalk.com/eureka/
+#server:
+#eureka:
+#    instance:
+#      preferIpAddress: true
+#    client:
+#      registerWithEureka: true
+#      fetchRegistry: true
+#      serviceUrl:
+#        defaultZone: http://servicediscovery-env.bfbu3rys9v.us-east-2.elasticbeanstalk.com/eureka/
+
