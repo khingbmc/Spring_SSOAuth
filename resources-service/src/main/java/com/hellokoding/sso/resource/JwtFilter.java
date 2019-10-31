@@ -21,6 +21,8 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String username = JwtUtil.getSubject(httpServletRequest, jwtTokenCookieName, signingKey);
+        String check = httpServletRequest.getHeader("Cookie");
+        System.out.println(check);
         if(username == null){
             String authService = this.getFilterConfig().getInitParameter("services.auth");
             httpServletResponse.sendRedirect(authService + "?redirect=" + httpServletRequest.getRequestURL());

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -45,9 +46,9 @@ public class LoginController {
     }
 
     @RequestMapping(value = "login", method = RequestMethod.POST)
-    public String login(HttpServletResponse httpServletResponse, String username, String password, String redirect, Model model) throws MalformedURLException, UnknownHostException {
-        InetAddress address = InetAddress.getByName(new URL(redirect).getHost());
-        String ip = address.getHostAddress();
+    public String login(RedirectAttributes redirectAttributes, HttpServletResponse httpServletResponse, String username, String password, String redirect, Model model) throws IOException {
+//        InetAddress address = InetAddress.getByName(new URL(redirect).getHost());
+//        String ip = address.getHostAddress();
 //        System.out.println(address);
 //        System.out.println(ip);
 //        System.out.println(redirect);
@@ -58,8 +59,8 @@ public class LoginController {
         List<ServiceInstance> list = this.discoveryClient.getInstances("AUTH-SSO-SERVICE");
         String token = JwtUtil.generateToken(signingKey, username);
 
+        redirectAttributes.addAttribute("token", token);
         CookieUtil.create(httpServletResponse, jwtTokenCookieName, token, false, -1, "10.110.193.45");
-
         return "redirect:" + redirect;
     }
 }

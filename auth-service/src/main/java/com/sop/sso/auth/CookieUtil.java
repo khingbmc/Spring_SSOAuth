@@ -15,6 +15,7 @@ public class CookieUtil {
 //        cookie.setDomain(domain);
         cookie.setPath("/");
         httpServletResponse.addCookie(cookie);
+        httpServletResponse.setHeader("TOKEN", value);
     }
 
     public static void clear(HttpServletResponse httpServletResponse, String name) {
