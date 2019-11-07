@@ -17,11 +17,12 @@
 
 package org.springframework.security.saml.saml2.encrypt;
 
-import java.lang.reflect.Field;
-import javax.annotation.Nonnull;
-
 import org.springframework.security.saml.SamlException;
 
+import javax.validation.constraints.NotNull;
+import java.lang.reflect.Field;
+
+@NotNull
 public enum DataEncryptionMethod {
 
 	TRIPLEDES_CBS("http://www.w3.org/2001/04/xmlenc#tripledes-cbc"),
@@ -31,7 +32,7 @@ public enum DataEncryptionMethod {
 
 	private final String urn;
 
-	DataEncryptionMethod(@Nonnull String urn) {
+	DataEncryptionMethod(@NotNull String urn) {
 		this.urn = urn;
 		try {
 			Field fieldName = getClass().getSuperclass().getDeclaredField("name");

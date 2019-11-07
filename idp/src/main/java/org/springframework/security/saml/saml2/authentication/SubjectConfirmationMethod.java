@@ -17,10 +17,11 @@
 
 package org.springframework.security.saml.saml2.authentication;
 
-import javax.annotation.Nonnull;
-
 import org.springframework.security.saml.SamlException;
 
+import javax.validation.constraints.NotNull;
+
+@NotNull
 public enum SubjectConfirmationMethod {
 
 	HOLDER_OF_KEY("urn:oasis:names:tc:SAML:2.0:cm:holder-of-key"),
@@ -30,7 +31,7 @@ public enum SubjectConfirmationMethod {
 
 	private final String urn;
 
-	SubjectConfirmationMethod(@Nonnull String urn) {
+	SubjectConfirmationMethod(@NotNull String urn) {
 		this.urn = urn;
 	}
 

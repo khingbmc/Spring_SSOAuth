@@ -17,11 +17,12 @@
 
 package org.springframework.security.saml.saml2.encrypt;
 
-import java.lang.reflect.Field;
-import javax.annotation.Nonnull;
-
 import org.springframework.security.saml.SamlException;
 
+import javax.validation.constraints.NotNull;
+import java.lang.reflect.Field;
+
+@NotNull
 public enum KeyEncryptionMethod {
 
 	RSA_1_5("http://www.w3.org/2001/04/xmlenc#rsa-1_5"),
@@ -29,7 +30,7 @@ public enum KeyEncryptionMethod {
 
 	private final String urn;
 
-	KeyEncryptionMethod(@Nonnull String urn) {
+	KeyEncryptionMethod(@NotNull String urn) {
 		this.urn = urn;
 		try {
 			Field fieldName = getClass().getSuperclass().getDeclaredField("name");

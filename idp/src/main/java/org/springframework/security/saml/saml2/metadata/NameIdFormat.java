@@ -17,19 +17,20 @@
 
 package org.springframework.security.saml.saml2.metadata;
 
+import org.springframework.security.saml.SamlException;
+import org.springframework.util.Assert;
+
+import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
-import javax.annotation.Nonnull;
-
-import org.springframework.security.saml.SamlException;
-import org.springframework.util.Assert;
 
 /**
  * Attribute Name Format Identifiers
  * https://www.oasis-open.org/committees/download.php/35711/sstc-saml-core-errata-2.0-wd-06-diff.pdf
  * Page 82, Line 3528
  */
+@NotNull
 public enum NameIdFormat {
 
 	UNSPECIFIED("urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"),
@@ -44,7 +45,7 @@ public enum NameIdFormat {
 
 	private final String urn;
 
-	NameIdFormat(@Nonnull String urn) {
+	NameIdFormat(@NotNull String urn) {
 		this.urn = urn;
 		//Spring introspection calls valueOf(..) on enums
 		//so we have to overwrite the name
