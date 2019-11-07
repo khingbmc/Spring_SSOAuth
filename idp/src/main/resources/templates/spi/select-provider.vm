@@ -34,9 +34,9 @@
 <div>
     <ul>
         #foreach ($provider in $providers)
-        <li>
-            <a href="${provider.redirect}"><span style="font-weight:bold">${provider.linkText}</span></a>
-        </li>
+            <li>
+                <a href="${provider.redirect}"><span style="font-weight:bold">${provider.linkText}</span></a>
+            </li>
         #end
     </ul>
 </div>

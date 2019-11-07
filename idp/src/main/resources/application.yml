@@ -158,9 +158,9 @@ spring:
           - alias: spring-security-saml-sp
             metadata: http://127.0.0.1:8080/saml/sp/metadata
             linktext: Spring Security SAML SP
-#        - alias: simplesamlphp
-#          metadata: http://simplesaml-for-spring-saml.cfapps.io/module.php/saml/sp/metadata.php/default-sp
-#          link-text: Simple SAML PHP SP
+          - alias: simplesamlphp
+            metadata: http://simplesaml-for-spring-saml.cfapps.io/module.php/saml/sp/metadata.php/default-sp
+            link-text: Simple SAML PHP SP
 #        - alias: xml-example
 #          link-text: Example SP Config Using XML
 #          metadata: |
