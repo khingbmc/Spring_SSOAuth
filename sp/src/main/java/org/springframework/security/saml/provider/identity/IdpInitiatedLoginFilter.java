@@ -61,9 +61,9 @@ public class IdpInitiatedLoginFilter extends SamlFilter<IdentityProviderService>
 	public IdpInitiatedLoginFilter(SamlProviderProvisioning<IdentityProviderService> provisioning,
 								   SamlMessageStore<Assertion, HttpServletRequest> assertionStore) {
 		this(
-				provisioning,
-				assertionStore,
-				new SamlRequestMatcher(provisioning, "init")
+			provisioning,
+			assertionStore,
+			new SamlRequestMatcher(provisioning, "init")
 		);
 	}
 
@@ -77,11 +77,11 @@ public class IdpInitiatedLoginFilter extends SamlFilter<IdentityProviderService>
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException {
+		throws ServletException, IOException {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (requestMatcher.matches(request) &&
-				authentication != null &&
-				authentication.isAuthenticated()) {
+			authentication != null &&
+			authentication.isAuthenticated()) {
 			IdentityProviderService provider = getProvisioning().getHostedProvider();
 			ServiceProviderMetadata recipient = getTargetProvider(request);
 			AuthenticationRequest authenticationRequest = getAuthenticationRequest(request);
@@ -90,18 +90,18 @@ public class IdpInitiatedLoginFilter extends SamlFilter<IdentityProviderService>
 			Response r = provider.response(authenticationRequest, assertion, recipient);
 
 			Endpoint acsUrl = provider.getPreferredEndpoint(
-					recipient.getServiceProvider().getAssertionConsumerService(),
-					Binding.POST,
-					-1
+				recipient.getServiceProvider().getAssertionConsumerService(),
+				Binding.POST,
+				-1
 			);
 
 			logger.debug(
-					format(
-							"Sending assertion for SP:%s to URL:%s using Binding:%s",
-							recipient.getEntityId(),
-							acsUrl.getLocation(),
-							acsUrl.getBinding()
-					)
+				format(
+					"Sending assertion for SP:%s to URL:%s using Binding:%s",
+					recipient.getEntityId(),
+					acsUrl.getLocation(),
+					acsUrl.getBinding()
+				)
 			);
 			String relayState = request.getParameter("RelayState");
 			if (acsUrl.getBinding() == Binding.REDIRECT) {

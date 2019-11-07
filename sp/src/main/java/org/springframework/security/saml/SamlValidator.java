@@ -17,14 +17,14 @@
 
 package org.springframework.security.saml;
 
+import java.util.List;
+
 import org.springframework.security.saml.key.SimpleKey;
 import org.springframework.security.saml.provider.HostedProviderService;
 import org.springframework.security.saml.saml2.Saml2Object;
 import org.springframework.security.saml.saml2.signature.Signature;
 import org.springframework.security.saml.saml2.signature.SignatureException;
 import org.springframework.security.saml.validation.ValidationException;
-
-import java.util.List;
 
 public interface SamlValidator {
 	/**

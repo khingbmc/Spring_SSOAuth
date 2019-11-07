@@ -1,9 +1,9 @@
 package org.springframework.security.saml.provider.config;
 
+import java.time.Clock;
+
 import org.springframework.security.saml.SamlException;
 import org.springframework.security.saml.provider.SamlServerConfiguration;
-
-import java.time.Clock;
 
 public class ThreadLocalSamlConfigurationRepository implements SamlConfigurationRepository {
 

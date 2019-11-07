@@ -17,12 +17,13 @@
 
 package org.springframework.security.saml.saml2.authentication;
 
-import org.joda.time.DateTime;
+import java.util.List;
+
 import org.springframework.security.saml.saml2.ImplementationHolder;
 import org.springframework.security.saml.saml2.metadata.Endpoint;
 import org.springframework.security.saml.saml2.signature.Signature;
 
-import java.util.List;
+import org.joda.time.DateTime;
 
 /**
  * Base class for requests

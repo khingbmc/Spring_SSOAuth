@@ -17,6 +17,11 @@
 
 package org.springframework.security.saml.provider.identity.config;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.servlet.Filter;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -30,21 +35,18 @@ import org.springframework.security.saml.saml2.signature.AlgorithmMethod;
 import org.springframework.security.saml.saml2.signature.DigestMethod;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
-import javax.servlet.Filter;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static java.util.Arrays.asList;
 import static org.springframework.security.saml.saml2.encrypt.KeyEncryptionMethod.RSA_1_5;
-import static org.springframework.security.saml.saml2.metadata.NameId.*;
+import static org.springframework.security.saml.saml2.metadata.NameId.EMAIL;
+import static org.springframework.security.saml.saml2.metadata.NameId.PERSISTENT;
+import static org.springframework.security.saml.saml2.metadata.NameId.UNSPECIFIED;
 import static org.springframework.security.saml.saml2.signature.AlgorithmMethod.RSA_SHA256;
 import static org.springframework.security.saml.saml2.signature.DigestMethod.SHA256;
 
 public class SamlIdentityProviderSecurityDsl
 	extends AbstractHttpConfigurer<SamlIdentityProviderSecurityDsl, HttpSecurity> {
 
-	private String prefix = "org/springframework/security/saml/idp/";
+	private String prefix = "saml/idp/";
 	private boolean useStandardFilterConfiguration = true;
 	private List<Filter> filters = new LinkedList<>();
 	private SamlServerConfiguration configuration = new SamlServerConfiguration()

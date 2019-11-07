@@ -16,9 +16,9 @@
  */
 package org.springframework.security.saml.validation;
 
-import org.springframework.security.saml.SamlException;
-
 import java.util.Arrays;
+
+import org.springframework.security.saml.SamlException;
 
 public class ValidationException extends SamlException {
 

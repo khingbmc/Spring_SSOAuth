@@ -17,6 +17,9 @@
 
 package org.springframework.security.saml.provider.config;
 
+import java.time.Clock;
+import javax.servlet.Filter;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.saml.SamlMetadataCache;
 import org.springframework.security.saml.SamlTemplateEngine;
@@ -25,13 +28,14 @@ import org.springframework.security.saml.SamlValidator;
 import org.springframework.security.saml.provider.HostedProviderService;
 import org.springframework.security.saml.provider.SamlServerConfiguration;
 import org.springframework.security.saml.provider.provisioning.SamlProviderProvisioning;
-import org.springframework.security.saml.spi.*;
+import org.springframework.security.saml.spi.DefaultMetadataCache;
+import org.springframework.security.saml.spi.DefaultSamlTransformer;
+import org.springframework.security.saml.spi.DefaultSessionAssertionStore;
+import org.springframework.security.saml.spi.DefaultValidator;
+import org.springframework.security.saml.spi.SpringSecuritySaml;
 import org.springframework.security.saml.spi.opensaml.OpenSamlImplementation;
 import org.springframework.security.saml.spi.opensaml.OpenSamlVelocityEngine;
 import org.springframework.web.client.RestOperations;
-
-import javax.servlet.Filter;
-import java.time.Clock;
 
 public abstract class AbstractSamlServerBeanConfiguration<T extends HostedProviderService> {
 

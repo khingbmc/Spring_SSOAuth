@@ -17,11 +17,11 @@
 
 package org.springframework.security.saml.validation;
 
-import org.springframework.security.saml.saml2.Saml2Object;
-
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.springframework.security.saml.saml2.Saml2Object;
 
 public class ValidationResult {
 

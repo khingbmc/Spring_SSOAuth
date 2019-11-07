@@ -70,9 +70,9 @@ public class IdentityProviderLogoutHandler implements LogoutHandler {
 		List<Assertion> messages = getAssertionStore().getMessages(request);
 		String issuer = logoutRequest.getIssuer().getValue();
 		List<Assertion> assertion = messages.stream().filter(
-				a -> issuer.equals(a.getIssuer().getValue())
+			a -> issuer.equals(a.getIssuer().getValue())
 		)
-				.collect(toList());
+			.collect(toList());
 		assertion.stream().forEach(a -> getAssertionStore().removeMessage(request, a.getId()));
 	}
 
@@ -112,7 +112,7 @@ public class IdentityProviderLogoutHandler implements LogoutHandler {
 								  Saml2Object lr,
 								  String location,
 								  String paramName)
-			throws UnsupportedEncodingException {
+		throws UnsupportedEncodingException {
 		String xml = provider.toXml(lr);
 		String value = provider.toEncodedXml(xml, true);
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(location);
@@ -121,8 +121,8 @@ public class IdentityProviderLogoutHandler implements LogoutHandler {
 			builder.queryParam("RelayState", UriUtils.encode(relayState, StandardCharsets.UTF_8.name()));
 		}
 		return builder.queryParam(paramName, UriUtils.encode(value, StandardCharsets.UTF_8.name()))
-				.build()
-				.toUriString();
+			.build()
+			.toUriString();
 	}
 
 	public SamlProviderProvisioning<IdentityProviderService> getProvisioning() {
@@ -139,10 +139,10 @@ public class IdentityProviderLogoutHandler implements LogoutHandler {
 										 String logoutRequestValue) throws IOException {
 		IdentityProviderService provider = provisioning.getHostedProvider();
 		LogoutRequest logoutRequest = provider.fromXml(
-				logoutRequestValue,
-				true,
-				HttpMethod.GET.name().equalsIgnoreCase(request.getMethod()),
-				LogoutRequest.class
+			logoutRequestValue,
+			true,
+			HttpMethod.GET.name().equalsIgnoreCase(request.getMethod()),
+			LogoutRequest.class
 		);
 		ValidationResult validate = provider.validate(logoutRequest);
 		if (validate.hasErrors()) {
@@ -179,10 +179,10 @@ public class IdentityProviderLogoutHandler implements LogoutHandler {
 										  String logoutResponseValue) throws IOException {
 		IdentityProviderService provider = getProvisioning().getHostedProvider();
 		LogoutResponse logoutResponse = provider.fromXml(
-				logoutResponseValue,
-				true,
-				HttpMethod.GET.name().equalsIgnoreCase(request.getMethod()),
-				LogoutResponse.class
+			logoutResponseValue,
+			true,
+			HttpMethod.GET.name().equalsIgnoreCase(request.getMethod()),
+			LogoutResponse.class
 		);
 		ValidationResult validate = provider.validate(logoutResponse);
 		//TODO what do we do with the validation result, we don't really care
@@ -196,15 +196,15 @@ public class IdentityProviderLogoutHandler implements LogoutHandler {
 			if (logoutRequest != null) {
 				//respond to the request
 				logoutResponse = provider.logoutResponse(
-						logoutRequest,
-						provider.getRemoteProvider(logoutRequest)
+					logoutRequest,
+					provider.getRemoteProvider(logoutRequest)
 				);
 				String redirect = getRedirectUrl(
-						request,
-						provider,
-						logoutResponse,
-						logoutResponse.getDestination(),
-						"SAMLResponse"
+					request,
+					provider,
+					logoutResponse,
+					logoutResponse.getDestination(),
+					"SAMLResponse"
 				);
 				request.setAttribute(RUN_SUCCESS, SamlLogoutSuccessHandler.LogoutStatus.REDIRECT);
 				response.sendRedirect(redirect);
@@ -230,10 +230,10 @@ public class IdentityProviderLogoutHandler implements LogoutHandler {
 				logger.debug(format("Sending IDP logout request to SP:%s", assertion.getIssuer().getValue()));
 				ServiceProviderMetadata sp = provider.getRemoteProvider(assertion);
 				LogoutRequest logoutRequest = provider.logoutRequest(
-						sp,
-						new NameIdPrincipal()
-								.setFormat(NameId.PERSISTENT)
-								.setValue(authentication.getName())
+					sp,
+					new NameIdPrincipal()
+						.setFormat(NameId.PERSISTENT)
+						.setValue(authentication.getName())
 				);
 
 
@@ -241,11 +241,11 @@ public class IdentityProviderLogoutHandler implements LogoutHandler {
 					logger.debug("Sending logout request through redirect.");
 					//TODO review binding and send POST if needed
 					String redirect = getRedirectUrl(
-							request,
-							provider,
-							logoutRequest,
-							logoutRequest.getDestination().getLocation(),
-							"SAMLRequest"
+						request,
+						provider,
+						logoutRequest,
+						logoutRequest.getDestination().getLocation(),
+						"SAMLRequest"
 					);
 					response.sendRedirect(redirect);
 				}

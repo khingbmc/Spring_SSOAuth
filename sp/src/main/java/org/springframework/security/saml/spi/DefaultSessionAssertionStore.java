@@ -17,13 +17,17 @@
 
 package org.springframework.security.saml.spi;
 
-import org.springframework.security.saml.SamlMessageStore;
-import org.springframework.security.saml.saml2.authentication.Assertion;
-
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.*;
-import java.util.stream.Collectors;
+
+import org.springframework.security.saml.SamlMessageStore;
+import org.springframework.security.saml.saml2.authentication.Assertion;
 
 /**
  * Manages assertion objects stored in the HTTP session object.

@@ -17,17 +17,24 @@
 
 package org.springframework.security.saml.provider.identity.config;
 
+import javax.servlet.Filter;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.saml.provider.SamlProviderLogoutFilter;
 import org.springframework.security.saml.provider.SamlServerConfiguration;
 import org.springframework.security.saml.provider.config.AbstractSamlServerBeanConfiguration;
-import org.springframework.security.saml.provider.identity.*;
+import org.springframework.security.saml.provider.identity.AssertionEnhancer;
+import org.springframework.security.saml.provider.identity.IdentityProviderLogoutHandler;
+import org.springframework.security.saml.provider.identity.IdentityProviderMetadataFilter;
+import org.springframework.security.saml.provider.identity.IdentityProviderService;
+import org.springframework.security.saml.provider.identity.IdpAuthenticationRequestFilter;
+import org.springframework.security.saml.provider.identity.IdpInitiatedLoginFilter;
+import org.springframework.security.saml.provider.identity.ResponseEnhancer;
+import org.springframework.security.saml.provider.identity.SelectServiceProviderFilter;
 import org.springframework.security.saml.provider.provisioning.HostBasedSamlIdentityProviderProvisioning;
 import org.springframework.security.saml.provider.provisioning.SamlProviderProvisioning;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
-
-import javax.servlet.Filter;
 
 public abstract class SamlIdentityProviderServerBeanConfiguration
 	extends AbstractSamlServerBeanConfiguration<IdentityProviderService> {

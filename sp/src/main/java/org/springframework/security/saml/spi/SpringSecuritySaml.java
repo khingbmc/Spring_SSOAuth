@@ -17,14 +17,14 @@
 
 package org.springframework.security.saml.spi;
 
-import org.springframework.security.saml.key.SimpleKey;
-import org.springframework.security.saml.saml2.Saml2Object;
-import org.springframework.security.saml.saml2.signature.Signature;
-
-import javax.xml.datatype.Duration;
 import java.time.Clock;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import javax.xml.datatype.Duration;
+
+import org.springframework.security.saml.key.SimpleKey;
+import org.springframework.security.saml.saml2.Saml2Object;
+import org.springframework.security.saml.saml2.signature.Signature;
 
 /**
  * Static utility class that serves as the delimiter between Spring Security SAML and underlying implementation.

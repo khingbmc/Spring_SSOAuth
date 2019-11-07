@@ -38,21 +38,74 @@ import org.opensaml.core.xml.XMLObjectBuilder;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistry;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistrySupport;
-import org.opensaml.core.xml.io.*;
-import org.opensaml.core.xml.schema.*;
-import org.opensaml.core.xml.schema.impl.*;
-import org.opensaml.saml.common.*;
+import org.opensaml.core.xml.io.Marshaller;
+import org.opensaml.core.xml.io.MarshallerFactory;
+import org.opensaml.core.xml.io.MarshallingException;
+import org.opensaml.core.xml.io.UnmarshallerFactory;
+import org.opensaml.core.xml.io.UnmarshallingException;
+import org.opensaml.core.xml.schema.XSAny;
+import org.opensaml.core.xml.schema.XSBase64Binary;
+import org.opensaml.core.xml.schema.XSBoolean;
+import org.opensaml.core.xml.schema.XSBooleanValue;
+import org.opensaml.core.xml.schema.XSDateTime;
+import org.opensaml.core.xml.schema.XSInteger;
+import org.opensaml.core.xml.schema.XSString;
+import org.opensaml.core.xml.schema.XSURI;
+import org.opensaml.core.xml.schema.impl.XSAnyBuilder;
+import org.opensaml.core.xml.schema.impl.XSBooleanBuilder;
+import org.opensaml.core.xml.schema.impl.XSDateTimeBuilder;
+import org.opensaml.core.xml.schema.impl.XSIntegerBuilder;
+import org.opensaml.core.xml.schema.impl.XSStringBuilder;
+import org.opensaml.core.xml.schema.impl.XSURIBuilder;
+import org.opensaml.saml.common.SAMLObject;
+import org.opensaml.saml.common.SAMLObjectBuilder;
+import org.opensaml.saml.common.SAMLObjectContentReference;
+import org.opensaml.saml.common.SAMLVersion;
+import org.opensaml.saml.common.SignableSAMLObject;
 import org.opensaml.saml.ext.idpdisco.DiscoveryResponse;
 import org.opensaml.saml.ext.idpdisco.impl.DiscoveryResponseBuilder;
 import org.opensaml.saml.ext.saml2mdreqinit.RequestInitiator;
 import org.opensaml.saml.ext.saml2mdreqinit.impl.RequestInitiatorBuilder;
-import org.opensaml.saml.saml2.core.*;
+import org.opensaml.saml.saml2.core.AttributeStatement;
+import org.opensaml.saml.saml2.core.AttributeValue;
+import org.opensaml.saml.saml2.core.Audience;
+import org.opensaml.saml.saml2.core.AuthenticatingAuthority;
+import org.opensaml.saml.saml2.core.AuthnContext;
+import org.opensaml.saml.saml2.core.AuthnContextClassRef;
+import org.opensaml.saml.saml2.core.AuthnContextComparisonTypeEnumeration;
+import org.opensaml.saml.saml2.core.AuthnRequest;
+import org.opensaml.saml.saml2.core.AuthnStatement;
+import org.opensaml.saml.saml2.core.Condition;
+import org.opensaml.saml.saml2.core.EncryptedAssertion;
+import org.opensaml.saml.saml2.core.EncryptedAttribute;
+import org.opensaml.saml.saml2.core.EncryptedElementType;
+import org.opensaml.saml.saml2.core.EncryptedID;
+import org.opensaml.saml.saml2.core.IDPEntry;
+import org.opensaml.saml.saml2.core.IDPList;
+import org.opensaml.saml.saml2.core.NameID;
+import org.opensaml.saml.saml2.core.NameIDPolicy;
+import org.opensaml.saml.saml2.core.NameIDType;
+import org.opensaml.saml.saml2.core.RequestedAuthnContext;
+import org.opensaml.saml.saml2.core.RequesterID;
+import org.opensaml.saml.saml2.core.StatusMessage;
 import org.opensaml.saml.saml2.encryption.Decrypter;
 import org.opensaml.saml.saml2.encryption.EncryptedElementTypeEncryptedKeyResolver;
 import org.opensaml.saml.saml2.encryption.Encrypter;
+import org.opensaml.saml.saml2.metadata.ArtifactResolutionService;
+import org.opensaml.saml.saml2.metadata.AssertionConsumerService;
+import org.opensaml.saml.saml2.metadata.AttributeConsumingService;
+import org.opensaml.saml.saml2.metadata.EntitiesDescriptor;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.Extensions;
-import org.opensaml.saml.saml2.metadata.*;
+import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
+import org.opensaml.saml.saml2.metadata.IndexedEndpoint;
+import org.opensaml.saml.saml2.metadata.KeyDescriptor;
+import org.opensaml.saml.saml2.metadata.NameIDFormat;
+import org.opensaml.saml.saml2.metadata.RequestedAttribute;
+import org.opensaml.saml.saml2.metadata.RoleDescriptor;
+import org.opensaml.saml.saml2.metadata.SPSSODescriptor;
+import org.opensaml.saml.saml2.metadata.SingleLogoutService;
+import org.opensaml.saml.saml2.metadata.SingleSignOnService;
 import org.opensaml.saml.saml2.metadata.impl.ExtensionsBuilder;
 import org.opensaml.security.SecurityException;
 import org.opensaml.security.credential.BasicCredential;
@@ -61,7 +114,13 @@ import org.opensaml.security.credential.UsageType;
 import org.opensaml.security.credential.impl.KeyStoreCredentialResolver;
 import org.opensaml.xmlsec.SignatureSigningParameters;
 import org.opensaml.xmlsec.config.impl.DefaultSecurityConfigurationBootstrap;
-import org.opensaml.xmlsec.encryption.support.*;
+import org.opensaml.xmlsec.encryption.support.ChainingEncryptedKeyResolver;
+import org.opensaml.xmlsec.encryption.support.DataEncryptionParameters;
+import org.opensaml.xmlsec.encryption.support.DecryptionException;
+import org.opensaml.xmlsec.encryption.support.EncryptionException;
+import org.opensaml.xmlsec.encryption.support.InlineEncryptedKeyResolver;
+import org.opensaml.xmlsec.encryption.support.KeyEncryptionParameters;
+import org.opensaml.xmlsec.encryption.support.SimpleRetrievalMethodEncryptedKeyResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoGenerator;
 import org.opensaml.xmlsec.keyinfo.NamedKeyInfoGeneratorManager;
@@ -70,7 +129,11 @@ import org.opensaml.xmlsec.signature.KeyInfo;
 import org.opensaml.xmlsec.signature.X509Certificate;
 import org.opensaml.xmlsec.signature.X509Data;
 import org.opensaml.xmlsec.signature.impl.SignatureImpl;
-import org.opensaml.xmlsec.signature.support.*;
+import org.opensaml.xmlsec.signature.support.ContentReference;
+import org.opensaml.xmlsec.signature.support.SignatureException;
+import org.opensaml.xmlsec.signature.support.SignatureSupport;
+import org.opensaml.xmlsec.signature.support.SignatureValidator;
+import org.opensaml.xmlsec.signature.support.Signer;
 import org.springframework.security.saml.SamlException;
 import org.springframework.security.saml.SamlKeyException;
 import org.springframework.security.saml.key.KeyType;
@@ -80,12 +143,21 @@ import org.springframework.security.saml.saml2.Saml2Object;
 import org.springframework.security.saml.saml2.attribute.Attribute;
 import org.springframework.security.saml.saml2.attribute.AttributeNameFormat;
 import org.springframework.security.saml.saml2.authentication.Assertion;
+import org.springframework.security.saml.saml2.authentication.AssertionCondition;
 import org.springframework.security.saml.saml2.authentication.AudienceRestriction;
+import org.springframework.security.saml.saml2.authentication.AuthenticationContext;
+import org.springframework.security.saml.saml2.authentication.AuthenticationContextClassReference;
+import org.springframework.security.saml.saml2.authentication.AuthenticationRequest;
+import org.springframework.security.saml.saml2.authentication.AuthenticationStatement;
 import org.springframework.security.saml.saml2.authentication.Conditions;
 import org.springframework.security.saml.saml2.authentication.Issuer;
+import org.springframework.security.saml.saml2.authentication.LogoutReason;
 import org.springframework.security.saml.saml2.authentication.LogoutRequest;
 import org.springframework.security.saml.saml2.authentication.LogoutResponse;
+import org.springframework.security.saml.saml2.authentication.NameIdPolicy;
+import org.springframework.security.saml.saml2.authentication.NameIdPrincipal;
 import org.springframework.security.saml.saml2.authentication.OneTimeUse;
+import org.springframework.security.saml.saml2.authentication.RequestedAuthenticationContext;
 import org.springframework.security.saml.saml2.authentication.Response;
 import org.springframework.security.saml.saml2.authentication.Scoping;
 import org.springframework.security.saml.saml2.authentication.Status;
@@ -93,11 +165,19 @@ import org.springframework.security.saml.saml2.authentication.StatusCode;
 import org.springframework.security.saml.saml2.authentication.Subject;
 import org.springframework.security.saml.saml2.authentication.SubjectConfirmation;
 import org.springframework.security.saml.saml2.authentication.SubjectConfirmationData;
-import org.springframework.security.saml.saml2.authentication.*;
+import org.springframework.security.saml.saml2.authentication.SubjectConfirmationMethod;
 import org.springframework.security.saml.saml2.encrypt.DataEncryptionMethod;
 import org.springframework.security.saml.saml2.encrypt.KeyEncryptionMethod;
+import org.springframework.security.saml.saml2.metadata.Binding;
 import org.springframework.security.saml.saml2.metadata.Endpoint;
-import org.springframework.security.saml.saml2.metadata.*;
+import org.springframework.security.saml.saml2.metadata.IdentityProvider;
+import org.springframework.security.saml.saml2.metadata.IdentityProviderMetadata;
+import org.springframework.security.saml.saml2.metadata.Metadata;
+import org.springframework.security.saml.saml2.metadata.NameId;
+import org.springframework.security.saml.saml2.metadata.Provider;
+import org.springframework.security.saml.saml2.metadata.ServiceProvider;
+import org.springframework.security.saml.saml2.metadata.ServiceProviderMetadata;
+import org.springframework.security.saml.saml2.metadata.SsoProvider;
 import org.springframework.security.saml.saml2.signature.AlgorithmMethod;
 import org.springframework.security.saml.saml2.signature.CanonicalizationMethod;
 import org.springframework.security.saml.saml2.signature.DigestMethod;
@@ -109,9 +189,6 @@ import org.springframework.util.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.crypto.SecretKey;
-import javax.xml.datatype.Duration;
-import javax.xml.namespace.QName;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -121,8 +198,17 @@ import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.time.Clock;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.crypto.SecretKey;
+import javax.xml.datatype.Duration;
+import javax.xml.namespace.QName;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -174,28 +260,28 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 	public EntityDescriptor getEntityDescriptor() {
 		XMLObjectBuilderFactory builderFactory = getBuilderFactory();
 		SAMLObjectBuilder<EntityDescriptor> builder =
-				(SAMLObjectBuilder<EntityDescriptor>) builderFactory.getBuilder(EntityDescriptor
-						.DEFAULT_ELEMENT_NAME);
+			(SAMLObjectBuilder<EntityDescriptor>) builderFactory.getBuilder(EntityDescriptor
+				.DEFAULT_ELEMENT_NAME);
 		return builder.buildObject();
 	}
 
 	public SPSSODescriptor getSPSSODescriptor() {
 		SAMLObjectBuilder<SPSSODescriptor> builder =
-				(SAMLObjectBuilder<SPSSODescriptor>) getBuilderFactory().getBuilder(SPSSODescriptor
-						.DEFAULT_ELEMENT_NAME);
+			(SAMLObjectBuilder<SPSSODescriptor>) getBuilderFactory().getBuilder(SPSSODescriptor
+				.DEFAULT_ELEMENT_NAME);
 		return builder.buildObject();
 	}
 
 	public IDPSSODescriptor getIDPSSODescriptor() {
 		SAMLObjectBuilder<IDPSSODescriptor> builder =
-				(SAMLObjectBuilder<IDPSSODescriptor>) getBuilderFactory().getBuilder(IDPSSODescriptor
-						.DEFAULT_ELEMENT_NAME);
+			(SAMLObjectBuilder<IDPSSODescriptor>) getBuilderFactory().getBuilder(IDPSSODescriptor
+				.DEFAULT_ELEMENT_NAME);
 		return builder.buildObject();
 	}
 
 	public Extensions getMetadataExtensions() {
 		SAMLObjectBuilder<Extensions> builder =
-				(SAMLObjectBuilder<Extensions>) getBuilderFactory().getBuilder(Extensions.DEFAULT_ELEMENT_NAME);
+			(SAMLObjectBuilder<Extensions>) getBuilderFactory().getBuilder(Extensions.DEFAULT_ELEMENT_NAME);
 		return builder.buildObject();
 	}
 
@@ -232,8 +318,8 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 		parserBuilderFeatures.put("http://javax.xml.XMLConstants/feature/secure-processing", TRUE);
 		parserBuilderFeatures.put("http://xml.org/sax/features/external-general-entities", FALSE);
 		parserBuilderFeatures.put(
-				"http://apache.org/xml/features/validation/schema/normalized-value",
-				FALSE
+			"http://apache.org/xml/features/validation/schema/normalized-value",
+			FALSE
 		);
 		parserBuilderFeatures.put("http://xml.org/sax/features/external-parameter-entities", FALSE);
 		parserBuilderFeatures.put("http://apache.org/xml/features/dom/defer-node-expansion", FALSE);
@@ -263,11 +349,11 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 
 		registry.setParserPool(parserPool);
 		encryptedKeyResolver = new ChainingEncryptedKeyResolver(
-				asList(
-						new InlineEncryptedKeyResolver(),
-						new EncryptedElementTypeEncryptedKeyResolver(),
-						new SimpleRetrievalMethodEncryptedKeyResolver()
-				)
+			asList(
+				new InlineEncryptedKeyResolver(),
+				new EncryptedElementTypeEncryptedKeyResolver(),
+				new SimpleRetrievalMethodEncryptedKeyResolver()
+			)
 		);
 	}
 
@@ -316,9 +402,9 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 			return marshallToXml(result);
 		}
 		throw new SamlException("To xml transformation not supported for: " +
-				saml2Object != null ?
-				saml2Object.getClass().getName() :
-				"null"
+			saml2Object != null ?
+			saml2Object.getClass().getName() :
+			"null"
 		);
 	}
 
@@ -333,37 +419,37 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 		Saml2Object result = null;
 		if (parsed instanceof EntityDescriptor) {
 			result = resolveMetadata((EntityDescriptor) parsed)
-					.setSignature(signature);
+				.setSignature(signature);
 		}
 		else if (parsed instanceof EntitiesDescriptor) {
 			result = resolveMetadata((EntitiesDescriptor) parsed, verificationKeys, localKeys);
 		}
 		else if (parsed instanceof AuthnRequest) {
 			result = resolveAuthenticationRequest((AuthnRequest) parsed)
-					.setSignature(signature);
+				.setSignature(signature);
 		}
 		else if (parsed instanceof org.opensaml.saml.saml2.core.Assertion) {
 			result = resolveAssertion((org.opensaml.saml.saml2.core.Assertion) parsed, verificationKeys, localKeys);
 		}
 		else if (parsed instanceof org.opensaml.saml.saml2.core.Response) {
 			result = resolveResponse((org.opensaml.saml.saml2.core.Response) parsed, verificationKeys, localKeys)
-					.setSignature(signature);
+				.setSignature(signature);
 		}
 		else if (parsed instanceof org.opensaml.saml.saml2.core.LogoutRequest) {
 			result = resolveLogoutRequest(
-					(org.opensaml.saml.saml2.core.LogoutRequest) parsed,
-					verificationKeys,
-					localKeys
+				(org.opensaml.saml.saml2.core.LogoutRequest) parsed,
+				verificationKeys,
+				localKeys
 			)
-					.setSignature(signature);
+				.setSignature(signature);
 		}
 		else if (parsed instanceof org.opensaml.saml.saml2.core.LogoutResponse) {
 			result = resolveLogoutResponse(
-					(org.opensaml.saml.saml2.core.LogoutResponse) parsed,
-					verificationKeys,
-					localKeys
+				(org.opensaml.saml.saml2.core.LogoutResponse) parsed,
+				verificationKeys,
+				localKeys
 			)
-					.setSignature(signature);
+				.setSignature(signature);
 		}
 		if (result != null) {
 			if (result instanceof ImplementationHolder) {
@@ -390,7 +476,7 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 		}
 		else {
 			throw new SamlException(
-					"Unrecognized object type:" + saml2Object.getImplementation().getClass().getName()
+				"Unrecognized object type:" + saml2Object.getImplementation().getClass().getName()
 			);
 		}
 	}
@@ -405,8 +491,8 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 					SignatureValidator.validate(object.getSignature(), credential);
 					last = null;
 					result = getSignature(object)
-							.setValidated(true)
-							.setValidatingKey(key);
+						.setValidated(true)
+						.setValidatingKey(key);
 					break;
 				} catch (SignatureException e) {
 					last = e;
@@ -414,9 +500,9 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 			}
 			if (last != null) {
 				throw new org.springframework.security.saml.saml2.signature.SignatureException(
-						"Signature validation against a " + object.getClass().getName() +
-								" object failed using " + keys.size() + (keys.size() == 1 ? " key." : " keys."),
-						last
+					"Signature validation against a " + object.getClass().getName() +
+						" object failed using " + keys.size() + (keys.size() == 1 ? " key." : " keys."),
+					last
 				);
 			}
 		}
@@ -437,11 +523,11 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 	public KeyStoreCredentialResolver getCredentialsResolver(SimpleKey key) {
 		KeyStore ks = getSamlKeyStoreProvider().getKeyStore(key);
 		Map<String, String> passwords = hasText(key.getPrivateKey()) ?
-				Collections.singletonMap(key.getName(), key.getPassphrase()) :
-				Collections.emptyMap();
+			Collections.singletonMap(key.getName(), key.getPassphrase()) :
+			Collections.emptyMap();
 		KeyStoreCredentialResolver resolver = new KeyStoreCredentialResolver(
-				ks,
-				passwords
+			ks,
+			passwords
 		);
 		return resolver;
 	}
@@ -453,15 +539,15 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 			SignatureImpl impl = (SignatureImpl) signature;
 			try {
 				result = new Signature()
-						.setSignatureAlgorithm(AlgorithmMethod.fromUrn(impl.getSignatureAlgorithm()))
-						.setCanonicalizationAlgorithm(CanonicalizationMethod.fromUrn(impl
-								.getCanonicalizationAlgorithm()))
-						.setSignatureValue(org.apache.xml.security.utils.Base64.encode(impl.getXMLSignature()
-								.getSignatureValue()))
+					.setSignatureAlgorithm(AlgorithmMethod.fromUrn(impl.getSignatureAlgorithm()))
+					.setCanonicalizationAlgorithm(CanonicalizationMethod.fromUrn(impl
+						.getCanonicalizationAlgorithm()))
+					.setSignatureValue(org.apache.xml.security.utils.Base64.encode(impl.getXMLSignature()
+						.getSignatureValue()))
 				;
 				//TODO extract the digest value
 				for (ContentReference ref :
-						ofNullable(signature.getContentReferences()).orElse(emptyList())) {
+					ofNullable(signature.getContentReferences()).orElse(emptyList())) {
 					if (ref instanceof SAMLObjectContentReference) {
 						SAMLObjectContentReference sref = (SAMLObjectContentReference) ref;
 						result.setDigestAlgorithm(DigestMethod.fromUrn(sref.getDigestAlgorithm()));
@@ -482,9 +568,9 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 		Encrypter encrypter = getEncrypter(key, keyAlgorithm, dataAlgorithm);
 		try {
 			Encrypter.KeyPlacement keyPlacement =
-					Encrypter.KeyPlacement.valueOf(
-							System.getProperty("spring.security.saml.encrypt.key.placement", "PEER")
-					);
+				Encrypter.KeyPlacement.valueOf(
+					System.getProperty("spring.security.saml.encrypt.key.placement", "PEER")
+				);
 			encrypter.setKeyPlacement(keyPlacement);
 			return encrypter.encrypt(assertion);
 		} catch (EncryptionException e) {
@@ -618,9 +704,9 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 
 		}
 		throw new UnsupportedOperationException(
-				descriptor == null ?
-						null :
-						descriptor.getClass().getName()
+			descriptor == null ?
+				null :
+				descriptor.getClass().getName()
 		);
 	}
 
@@ -628,11 +714,11 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 		List<Attribute> result = new LinkedList<>();
 		if (desc.getDefaultAttributeConsumingService() != null) {
 			result.addAll(getRequestedAttributes(desc.getDefaultAttributeConsumingService()
-					.getRequestAttributes()));
+				.getRequestAttributes()));
 		}
 		else {
 			for (AttributeConsumingService s :
-					ofNullable(desc.getAttributeConsumingServices()).orElse(emptyList())) {
+				ofNullable(desc.getAttributeConsumingServices()).orElse(emptyList())) {
 				if (s != null) {
 					//take the first one
 					result.addAll(getRequestedAttributes(s.getRequestAttributes()));
@@ -652,11 +738,11 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 			if (obj instanceof RequestInitiator) {
 				RequestInitiator req = (RequestInitiator) obj;
 				result = new Endpoint()
-						.setIndex(0)
-						.setDefault(false)
-						.setBinding(Binding.fromUrn(req.getBinding()))
-						.setLocation(req.getLocation())
-						.setResponseLocation(req.getResponseLocation());
+					.setIndex(0)
+					.setDefault(false)
+					.setBinding(Binding.fromUrn(req.getBinding()))
+					.setLocation(req.getLocation())
+					.setResponseLocation(req.getResponseLocation());
 			}
 		}
 		return result;
@@ -671,11 +757,11 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 			if (obj instanceof DiscoveryResponse) {
 				DiscoveryResponse resp = (DiscoveryResponse) obj;
 				result = new Endpoint()
-						.setDefault(resp.isDefault())
-						.setIndex(resp.getIndex())
-						.setBinding(Binding.fromUrn(resp.getBinding()))
-						.setLocation(resp.getLocation())
-						.setResponseLocation(resp.getResponseLocation());
+					.setDefault(resp.isDefault())
+					.setIndex(resp.getIndex())
+					.setBinding(Binding.fromUrn(resp.getBinding()))
+					.setLocation(resp.getLocation())
+					.setResponseLocation(resp.getResponseLocation());
 			}
 		}
 		return result;
@@ -701,7 +787,7 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 		for (X509Data x509 : ofNullable(desc.getKeyInfo().getX509Datas()).orElse(emptyList())) {
 			for (X509Certificate cert : ofNullable(x509.getX509Certificates()).orElse(emptyList())) {
 				result.add(new SimpleKey(type.getTypeName() + "-" + (index++), null, cert.getValue(), null,
-						type
+					type
 				));
 			}
 		}
@@ -710,27 +796,27 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 	}
 
 	protected List<Endpoint> getEndpoints(
-			List<? extends org.opensaml.saml.saml2.metadata.Endpoint>
-					services
+		List<? extends org.opensaml.saml.saml2.metadata.Endpoint>
+			services
 	) {
 		List<Endpoint> result = new LinkedList<>();
 		if (services != null) {
 			services
-					.stream()
-					.forEach(s -> {
-								Endpoint endpoint = new Endpoint()
-										.setBinding(Binding.fromUrn(s.getBinding()))
-										.setLocation(s.getLocation())
-										.setResponseLocation(s.getResponseLocation());
-								result.add(endpoint);
-								if (s instanceof IndexedEndpoint) {
-									IndexedEndpoint idxEndpoint = (IndexedEndpoint) s;
-									endpoint
-											.setIndex(idxEndpoint.getIndex())
-											.setDefault(idxEndpoint.isDefault());
-								}
-							}
-					);
+				.stream()
+				.forEach(s -> {
+						Endpoint endpoint = new Endpoint()
+							.setBinding(Binding.fromUrn(s.getBinding()))
+							.setLocation(s.getLocation())
+							.setResponseLocation(s.getResponseLocation());
+						result.add(endpoint);
+						if (s instanceof IndexedEndpoint) {
+							IndexedEndpoint idxEndpoint = (IndexedEndpoint) s;
+							endpoint
+								.setIndex(idxEndpoint.getIndex())
+								.setDefault(idxEndpoint.isDefault());
+						}
+					}
+				);
 		}
 		return result;
 	}
@@ -739,7 +825,7 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 		List<NameId> result = new LinkedList<>();
 		if (nameIDFormats != null) {
 			nameIDFormats.stream()
-					.forEach(n -> result.add(NameId.fromUrn(n.getFormat())));
+				.forEach(n -> result.add(NameId.fromUrn(n.getFormat())));
 		}
 		return result;
 	}
@@ -774,7 +860,7 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 			org.opensaml.saml.saml2.core.Assertion osAssertion = internalToXml(a);
 			if (a.getEncryptionKey() != null) {
 				EncryptedAssertion encryptedAssertion =
-						encryptAssertion(osAssertion, a.getEncryptionKey(), a.getKeyAlgorithm(), a.getDataAlgorithm());
+					encryptAssertion(osAssertion, a.getEncryptionKey(), a.getKeyAlgorithm(), a.getDataAlgorithm());
 				result.getEncryptedAssertions().add(encryptedAssertion);
 			}
 			else {
@@ -833,8 +919,8 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 				}
 				if (sp.getRequestedAttributes() != null && !sp.getRequestedAttributes().isEmpty()) {
 					descriptor
-							.getAttributeConsumingServices()
-							.add(getAttributeConsumingService(sp.getRequestedAttributes()));
+						.getAttributeConsumingServices()
+						.add(getAttributeConsumingService(sp.getRequestedAttributes()));
 				}
 
 			}
@@ -876,12 +962,12 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 			Endpoint discovery = p.getDiscovery();
 			if (requestInitiation != null || discovery != null) {
 				ExtensionsBuilder extensionsBuilder = (ExtensionsBuilder) getBuilderFactory().getBuilder
-						(Extensions.DEFAULT_ELEMENT_NAME);
+					(Extensions.DEFAULT_ELEMENT_NAME);
 				roleDescriptor.setExtensions(extensionsBuilder.buildObject());
 
 				if (requestInitiation != null) {
 					RequestInitiatorBuilder builder = (RequestInitiatorBuilder) getBuilderFactory().getBuilder
-							(RequestInitiator.DEFAULT_ELEMENT_NAME);
+						(RequestInitiator.DEFAULT_ELEMENT_NAME);
 					RequestInitiator init = builder.buildObject();
 					init.setBinding(requestInitiation.getBinding().toString());
 					init.setLocation(requestInitiation.getLocation());
@@ -890,7 +976,7 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 				}
 				if (discovery != null) {
 					DiscoveryResponseBuilder builder = (DiscoveryResponseBuilder) getBuilderFactory().getBuilder
-							(DiscoveryResponse.DEFAULT_ELEMENT_NAME);
+						(DiscoveryResponse.DEFAULT_ELEMENT_NAME);
 					DiscoveryResponse response = builder.buildObject(DiscoveryResponse.DEFAULT_ELEMENT_NAME);
 					response.setBinding(discovery.getBinding().toString());
 					response.setLocation(discovery.getLocation());
@@ -935,7 +1021,7 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 
 	protected org.opensaml.saml.saml2.core.LogoutResponse internalToXml(LogoutResponse response) {
 		org.opensaml.saml.saml2.core.LogoutResponse result =
-				buildSAMLObject(org.opensaml.saml.saml2.core.LogoutResponse.class);
+			buildSAMLObject(org.opensaml.saml.saml2.core.LogoutResponse.class);
 		result.setInResponseTo(response.getInResponseTo());
 		result.setID(response.getId());
 		result.setIssueInstant(response.getIssueInstant());
@@ -967,7 +1053,7 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 
 	protected org.opensaml.saml.saml2.core.LogoutRequest internalToXml(LogoutRequest request) {
 		org.opensaml.saml.saml2.core.LogoutRequest lr =
-				buildSAMLObject(org.opensaml.saml.saml2.core.LogoutRequest.class);
+			buildSAMLObject(org.opensaml.saml.saml2.core.LogoutRequest.class);
 		lr.setDestination(request.getDestination().getLocation());
 		lr.setID(request.getId());
 		lr.setVersion(SAMLVersion.VERSION_20);
@@ -992,12 +1078,12 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 
 	protected org.opensaml.saml.saml2.core.Assertion internalToXml(Assertion request) {
 		org.opensaml.saml.saml2.core.Assertion a = buildSAMLObject(org.opensaml.saml.saml2.core.Assertion
-				.class);
+			.class);
 		a.setVersion(SAMLVersion.VERSION_20);
 		a.setIssueInstant(request.getIssueInstant());
 		a.setID(request.getId());
 		org.opensaml.saml.saml2.core.Issuer issuer = buildSAMLObject(org.opensaml.saml.saml2.core.Issuer
-				.class);
+			.class);
 		issuer.setValue(request.getIssuer().getValue());
 		a.setIssuer(issuer);
 
@@ -1009,33 +1095,33 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 		nid.setSPNameQualifier(principal.getSpNameQualifier());
 
 		org.opensaml.saml.saml2.core.SubjectConfirmationData confData =
-				buildSAMLObject(org.opensaml.saml.saml2.core.SubjectConfirmationData.class);
+			buildSAMLObject(org.opensaml.saml.saml2.core.SubjectConfirmationData.class);
 		confData.setInResponseTo(request.getSubject()
-				.getConfirmations()
-				.get(0)
-				.getConfirmationData()
-				.getInResponseTo());
+			.getConfirmations()
+			.get(0)
+			.getConfirmationData()
+			.getInResponseTo());
 		confData.setNotBefore(request.getSubject().getConfirmations().get(0).getConfirmationData().getNotBefore());
 		confData.setNotOnOrAfter(request.getSubject()
-				.getConfirmations()
-				.get(0)
-				.getConfirmationData()
-				.getNotOnOrAfter());
+			.getConfirmations()
+			.get(0)
+			.getConfirmationData()
+			.getNotOnOrAfter());
 		confData.setRecipient(request.getSubject().getConfirmations().get(0).getConfirmationData().getRecipient());
 
 		org.opensaml.saml.saml2.core.SubjectConfirmation confirmation =
-				buildSAMLObject(org.opensaml.saml.saml2.core.SubjectConfirmation.class);
+			buildSAMLObject(org.opensaml.saml.saml2.core.SubjectConfirmation.class);
 		confirmation.setMethod(request.getSubject().getConfirmations().get(0).getMethod().toString());
 		confirmation.setSubjectConfirmationData(confData);
 
 		org.opensaml.saml.saml2.core.Subject subject =
-				buildSAMLObject(org.opensaml.saml.saml2.core.Subject.class);
+			buildSAMLObject(org.opensaml.saml.saml2.core.Subject.class);
 		a.setSubject(subject);
 		subject.setNameID(nid);
 		subject.getSubjectConfirmations().add(confirmation);
 
 		org.opensaml.saml.saml2.core.Conditions conditions =
-				buildSAMLObject(org.opensaml.saml.saml2.core.Conditions.class);
+			buildSAMLObject(org.opensaml.saml.saml2.core.Conditions.class);
 		conditions.setNotBefore(request.getConditions().getNotBefore());
 		conditions.setNotOnOrAfter(request.getConditions().getNotOnOrAfter());
 		a.setConditions(conditions);
@@ -1045,22 +1131,22 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 
 		for (AuthenticationStatement stmt : request.getAuthenticationStatements()) {
 			org.opensaml.saml.saml2.core.AuthnStatement authnStatement =
-					buildSAMLObject(org.opensaml.saml.saml2.core.AuthnStatement.class);
+				buildSAMLObject(org.opensaml.saml.saml2.core.AuthnStatement.class);
 			org.opensaml.saml.saml2.core.AuthnContext actx =
-					buildSAMLObject(org.opensaml.saml.saml2.core.AuthnContext.class);
+				buildSAMLObject(org.opensaml.saml.saml2.core.AuthnContext.class);
 			org.opensaml.saml.saml2.core.AuthnContextClassRef aref =
-					buildSAMLObject(org.opensaml.saml.saml2.core.AuthnContextClassRef.class);
+				buildSAMLObject(org.opensaml.saml.saml2.core.AuthnContextClassRef.class);
 			AuthenticationContext authenticationContext = stmt.getAuthenticationContext();
 			aref.setAuthnContextClassRef(authenticationContext.getClassReference().toString());
 			actx.setAuthnContextClassRef(aref);
 			if (!CollectionUtils.isEmpty(authenticationContext.getAuthenticatingAuthorities())) {
 				actx.getAuthenticatingAuthorities()
-						.addAll(authenticationContext.getAuthenticatingAuthorities().stream().map(uri -> {
-							AuthenticatingAuthority authenticatingAuthority =
-									buildSAMLObject(AuthenticatingAuthority.class);
-							authenticatingAuthority.setURI(uri);
-							return authenticatingAuthority;
-						}).collect(Collectors.toList()));
+					.addAll(authenticationContext.getAuthenticatingAuthorities().stream().map(uri -> {
+						AuthenticatingAuthority authenticatingAuthority =
+							buildSAMLObject(AuthenticatingAuthority.class);
+						authenticatingAuthority.setURI(uri);
+						return authenticatingAuthority;
+					}).collect(Collectors.toList()));
 			}
 			authnStatement.setAuthnContext(actx);
 			a.getAuthnStatements().add(authnStatement);
@@ -1070,15 +1156,15 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 		}
 
 		org.opensaml.saml.saml2.core.AttributeStatement astmt =
-				buildSAMLObject(org.opensaml.saml.saml2.core.AttributeStatement.class);
+			buildSAMLObject(org.opensaml.saml.saml2.core.AttributeStatement.class);
 		for (Attribute attr : request.getAttributes()) {
 			org.opensaml.saml.saml2.core.Attribute attribute =
-					buildSAMLObject(org.opensaml.saml.saml2.core.Attribute.class);
+				buildSAMLObject(org.opensaml.saml.saml2.core.Attribute.class);
 			attribute.setName(attr.getName());
 			attribute.setFriendlyName(attr.getFriendlyName());
 			attribute.setNameFormat(attr.getNameFormat().toString());
 			attr.getValues().stream().forEach(
-					av -> attribute.getAttributeValues().add(objectToXmlObject(av))
+				av -> attribute.getAttributeValues().add(objectToXmlObject(av))
 			);
 			astmt.getAttributes().add(attribute);
 		}
@@ -1094,7 +1180,7 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 	protected void addCondition(org.opensaml.saml.saml2.core.Conditions conditions, AssertionCondition c) {
 		if (c instanceof AudienceRestriction) {
 			org.opensaml.saml.saml2.core.AudienceRestriction ar =
-					buildSAMLObject(org.opensaml.saml.saml2.core.AudienceRestriction.class);
+				buildSAMLObject(org.opensaml.saml.saml2.core.AudienceRestriction.class);
 			for (String audience : ((AudienceRestriction) c).getAudiences()) {
 				Audience aud = buildSAMLObject(Audience.class);
 				aud.setAudienceURI(audience);
@@ -1104,7 +1190,7 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 		}
 		else if (c instanceof OneTimeUse) {
 			org.opensaml.saml.saml2.core.OneTimeUse otu =
-					buildSAMLObject(org.opensaml.saml.saml2.core.OneTimeUse.class);
+				buildSAMLObject(org.opensaml.saml.saml2.core.OneTimeUse.class);
 			conditions.getConditions().add(otu);
 		}
 	}
@@ -1134,8 +1220,8 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 	protected String marshallToXml(XMLObject auth) {
 		try {
 			Element element = getMarshallerFactory()
-					.getMarshaller(auth)
-					.marshall(auth);
+				.getMarshaller(auth)
+				.marshall(auth);
 			return SerializeSupport.nodeToString(element);
 		} catch (MarshallingException e) {
 			throw new SamlException(e);
@@ -1165,12 +1251,12 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 			}
 			if (!StringUtils.isEmpty(request.getAuthenticationContextClassReferences())) {
 				List<AuthnContextClassRef> authnContextClassRefs = request.getAuthenticationContextClassReferences()
-						.stream()
-						.map(authenticationContextClassReference -> {
-							AuthnContextClassRef authnContextClassRef = buildSAMLObject(AuthnContextClassRef.class);
-							authnContextClassRef.setAuthnContextClassRef(authenticationContextClassReference.getValue());
-							return authnContextClassRef;
-						}).collect(Collectors.toList());
+					.stream()
+					.map(authenticationContextClassReference -> {
+						AuthnContextClassRef authnContextClassRef = buildSAMLObject(AuthnContextClassRef.class);
+						authnContextClassRef.setAuthnContextClassRef(authenticationContextClassReference.getValue());
+						return authnContextClassRef;
+					}).collect(Collectors.toList());
 				result.getAuthnContextClassRefs().addAll(authnContextClassRefs);
 			}
 		}
@@ -1178,7 +1264,7 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 	}
 
 	protected NameIDPolicy getNameIDPolicy(
-			NameIdPolicy nameIdPolicy
+		NameIdPolicy nameIdPolicy
 	) {
 		NameIDPolicy result = null;
 		if (nameIdPolicy != null) {
@@ -1194,9 +1280,9 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 		NameIdPolicy result = null;
 		if (nameIDPolicy != null) {
 			result = new NameIdPolicy()
-					.setAllowCreate(nameIDPolicy.getAllowCreate())
-					.setFormat(NameId.fromUrn(nameIDPolicy.getFormat()))
-					.setSpNameQualifier(nameIDPolicy.getSPNameQualifier());
+				.setAllowCreate(nameIDPolicy.getAllowCreate())
+				.setFormat(NameId.fromUrn(nameIDPolicy.getFormat()))
+				.setSpNameQualifier(nameIDPolicy.getSPNameQualifier());
 		}
 		return result;
 	}
@@ -1236,47 +1322,47 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 			IDPList idpList = scoping.getIDPList();
 			List<RequesterID> requesterIDs = scoping.getRequesterIDs();
 			result = new Scoping(
-					idpList != null ? idpList.getIDPEntrys().stream().map(idpEntry -> idpEntry.getProviderID())
-							.collect(Collectors.toList()) : Collections.emptyList(),
-					requesterIDs != null ? requesterIDs.stream().map(requesterID -> requesterID.getRequesterID())
-							.collect(Collectors.toList()) : Collections.emptyList(),
-					scoping.getProxyCount()
+				idpList != null ? idpList.getIDPEntrys().stream().map(idpEntry -> idpEntry.getProviderID())
+					.collect(Collectors.toList()) : Collections.emptyList(),
+				requesterIDs != null ? requesterIDs.stream().map(requesterID -> requesterID.getRequesterID())
+					.collect(Collectors.toList()) : Collections.emptyList(),
+				scoping.getProxyCount()
 			);
 		}
 		return result;
 	}
 
 	protected Response resolveResponse(
-			org.opensaml.saml.saml2.core.Response parsed,
-			List<SimpleKey> verificationKeys,
-			List<SimpleKey> localKeys
+		org.opensaml.saml.saml2.core.Response parsed,
+		List<SimpleKey> verificationKeys,
+		List<SimpleKey> localKeys
 	) {
 		Response result = new Response()
-				.setConsent(parsed.getConsent())
-				.setDestination(parsed.getDestination())
-				.setId(parsed.getID())
-				.setInResponseTo(parsed.getInResponseTo())
-				.setIssueInstant(parsed.getIssueInstant())
-				.setIssuer(getIssuer(parsed.getIssuer()))
-				.setVersion(parsed.getVersion().toString())
-				.setStatus(getStatus(parsed.getStatus()))
-				.setAssertions(
-						parsed.getAssertions().stream().map(a -> resolveAssertion(a, verificationKeys, localKeys))
-								.collect(Collectors.toList())
-				);
+			.setConsent(parsed.getConsent())
+			.setDestination(parsed.getDestination())
+			.setId(parsed.getID())
+			.setInResponseTo(parsed.getInResponseTo())
+			.setIssueInstant(parsed.getIssueInstant())
+			.setIssuer(getIssuer(parsed.getIssuer()))
+			.setVersion(parsed.getVersion().toString())
+			.setStatus(getStatus(parsed.getStatus()))
+			.setAssertions(
+				parsed.getAssertions().stream().map(a -> resolveAssertion(a, verificationKeys, localKeys))
+					.collect(Collectors.toList())
+			);
 		if (parsed.getEncryptedAssertions() != null && !parsed.getEncryptedAssertions().isEmpty()) {
 			parsed
-					.getEncryptedAssertions()
-					.stream()
-					.forEach(
-							a -> result.addAssertion(
-									resolveAssertion(
-											(org.opensaml.saml.saml2.core.Assertion) decrypt(a, localKeys),
-											verificationKeys,
-											localKeys
-									)
-							)
-					);
+				.getEncryptedAssertions()
+				.stream()
+				.forEach(
+					a -> result.addAssertion(
+						resolveAssertion(
+							(org.opensaml.saml.saml2.core.Assertion) decrypt(a, localKeys),
+							verificationKeys,
+							localKeys
+						)
+					)
+				);
 		}
 
 		return result;
@@ -1287,14 +1373,14 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 												   List<SimpleKey> verificationKeys,
 												   List<SimpleKey> localKeys) {
 		LogoutResponse result = new LogoutResponse()
-				.setId(response.getID())
-				.setInResponseTo(response.getInResponseTo())
-				.setConsent(response.getConsent())
-				.setVersion(response.getVersion().toString())
-				.setIssueInstant(response.getIssueInstant())
-				.setIssuer(getIssuer(response.getIssuer()))
-				.setDestination(response.getDestination())
-				.setStatus(getStatus(response.getStatus()));
+			.setId(response.getID())
+			.setInResponseTo(response.getInResponseTo())
+			.setConsent(response.getConsent())
+			.setVersion(response.getVersion().toString())
+			.setIssueInstant(response.getIssueInstant())
+			.setIssuer(getIssuer(response.getIssuer()))
+			.setDestination(response.getDestination())
+			.setStatus(getStatus(response.getStatus()));
 
 		return result;
 	}
@@ -1303,14 +1389,14 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 												 List<SimpleKey> verificationKeys,
 												 List<SimpleKey> localKeys) {
 		LogoutRequest result = new LogoutRequest()
-				.setId(request.getID())
-				.setConsent(request.getConsent())
-				.setVersion(request.getVersion().toString())
-				.setNotOnOrAfter(request.getNotOnOrAfter())
-				.setIssueInstant(request.getIssueInstant())
-				.setReason(LogoutReason.fromUrn(request.getReason()))
-				.setIssuer(getIssuer(request.getIssuer()))
-				.setDestination(new Endpoint().setLocation(request.getDestination()));
+			.setId(request.getID())
+			.setConsent(request.getConsent())
+			.setVersion(request.getVersion().toString())
+			.setNotOnOrAfter(request.getNotOnOrAfter())
+			.setIssueInstant(request.getIssueInstant())
+			.setReason(LogoutReason.fromUrn(request.getReason()))
+			.setIssuer(getIssuer(request.getIssuer()))
+			.setDestination(new Endpoint().setLocation(request.getDestination()));
 		NameID nameID = getNameID(request.getNameID(), request.getEncryptedID(), localKeys);
 		result.setNameId(getNameIdPrincipal(nameID));
 		return result;
@@ -1318,68 +1404,68 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 
 	protected Status getStatus(org.opensaml.saml.saml2.core.Status status) {
 		return new Status()
-				.setCode(StatusCode.fromUrn(status.getStatusCode().getValue()))
-				.setMessage(status.getStatusMessage() != null ? status.getStatusMessage().getMessage() : null);
+			.setCode(StatusCode.fromUrn(status.getStatusCode().getValue()))
+			.setMessage(status.getStatusMessage() != null ? status.getStatusMessage().getMessage() : null);
 	}
 
 	protected Assertion resolveAssertion(
-			org.opensaml.saml.saml2.core.Assertion parsed,
-			List<SimpleKey> verificationKeys,
-			List<SimpleKey> localKeys
+		org.opensaml.saml.saml2.core.Assertion parsed,
+		List<SimpleKey> verificationKeys,
+		List<SimpleKey> localKeys
 	) {
 		Signature signature = validateSignature(parsed, verificationKeys);
 		return new Assertion()
-				.setSignature(signature)
-				.setId(parsed.getID())
-				.setIssueInstant(parsed.getIssueInstant())
-				.setVersion(parsed.getVersion().toString())
-				.setIssuer(getIssuer(parsed.getIssuer()))
-				.setSubject(getSubject(parsed.getSubject(), localKeys))
-				.setConditions(getConditions(parsed.getConditions()))
-				.setAuthenticationStatements(getAuthenticationStatements(parsed.getAuthnStatements()))
-				.setAttributes(getAttributes(parsed.getAttributeStatements(), localKeys))
-				;
+			.setSignature(signature)
+			.setId(parsed.getID())
+			.setIssueInstant(parsed.getIssueInstant())
+			.setVersion(parsed.getVersion().toString())
+			.setIssuer(getIssuer(parsed.getIssuer()))
+			.setSubject(getSubject(parsed.getSubject(), localKeys))
+			.setConditions(getConditions(parsed.getConditions()))
+			.setAuthenticationStatements(getAuthenticationStatements(parsed.getAuthnStatements()))
+			.setAttributes(getAttributes(parsed.getAttributeStatements(), localKeys))
+			;
 	}
 
 	protected List<Attribute> getRequestedAttributes(List<RequestedAttribute> attributes) {
 		List<Attribute> result = new LinkedList<>();
 		for (RequestedAttribute a : ofNullable(attributes).orElse(emptyList())) {
 			result.add(
-					new Attribute()
-							.setFriendlyName(a.getFriendlyName())
-							.setName(a.getName())
-							.setNameFormat(AttributeNameFormat.fromUrn(a.getNameFormat()))
-							.setValues(getJavaValues(a.getAttributeValues()))
-							.setRequired(a.isRequired())
+				new Attribute()
+					.setFriendlyName(a.getFriendlyName())
+					.setName(a.getName())
+					.setNameFormat(AttributeNameFormat.fromUrn(a.getNameFormat()))
+					.setValues(getJavaValues(a.getAttributeValues()))
+					.setRequired(a.isRequired())
 			);
 		}
 		return result;
 	}
 
 	protected List<Attribute> getAttributes(
-			List<AttributeStatement> attributeStatements, List<SimpleKey>
-			localKeys
+		List<AttributeStatement> attributeStatements, List<SimpleKey>
+		localKeys
 	) {
 		List<Attribute> result = new LinkedList<>();
 		for (AttributeStatement stmt : ofNullable(attributeStatements).orElse(emptyList())) {
 			for (org.opensaml.saml.saml2.core.Attribute a : ofNullable(stmt.getAttributes()).orElse(emptyList())) {
 				result.add(
-						new Attribute()
-								.setFriendlyName(a.getFriendlyName())
-								.setName(a.getName())
-								.setNameFormat(AttributeNameFormat.fromUrn(a.getNameFormat()))
-								.setValues(getJavaValues(a.getAttributeValues()))
+					new Attribute()
+						.setFriendlyName(a.getFriendlyName())
+						.setName(a.getName())
+						.setNameFormat(AttributeNameFormat.fromUrn(a.getNameFormat()))
+						.setValues(getJavaValues(a.getAttributeValues()))
 				);
 			}
 			for (EncryptedAttribute encryptedAttribute : ofNullable(stmt.getEncryptedAttributes()).orElse(emptyList())) {
 				org.opensaml.saml.saml2.core.Attribute a = (org.opensaml.saml.saml2.core.Attribute) decrypt
-						(encryptedAttribute, localKeys);
+					(encryptedAttribute, localKeys);
 				result.add(
-						new Attribute()
-								.setFriendlyName(a.getFriendlyName())
-								.setName(a.getName())
-								.setNameFormat(AttributeNameFormat.fromUrn(a.getNameFormat()))
-								.setValues(getJavaValues(a.getAttributeValues()))
+					new Attribute()
+						.setFriendlyName(a.getFriendlyName())
+						.setName(a.getName())
+						.setNameFormat(AttributeNameFormat.fromUrn(a.getNameFormat()))
+						.setValues(getJavaValues(a.getAttributeValues()))
 				);
 			}
 		}
@@ -1445,20 +1531,20 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 			}
 			List<AuthenticatingAuthority> authenticatingAuthorities = authnContext.getAuthenticatingAuthorities();
 			List<String> authenticatingAuthoritiesUrns = authenticatingAuthorities != null ?
-					authenticatingAuthorities.stream().map(authority -> authority.getURI()).collect(Collectors.toList()) :
-					null;
+				authenticatingAuthorities.stream().map(authority -> authority.getURI()).collect(Collectors.toList()) :
+				null;
 			result.add(
-					new AuthenticationStatement()
-							.setSessionIndex(s.getSessionIndex())
-							.setAuthInstant(s.getAuthnInstant())
-							.setSessionNotOnOrAfter(s.getSessionNotOnOrAfter())
-							.setAuthenticationContext(
-									authnContext != null ?
-											new AuthenticationContext()
-													.setClassReference(AuthenticationContextClassReference.fromUrn(ref))
-													.setAuthenticatingAuthorities(authenticatingAuthoritiesUrns)
-											: null
-							)
+				new AuthenticationStatement()
+					.setSessionIndex(s.getSessionIndex())
+					.setAuthInstant(s.getAuthnInstant())
+					.setSessionNotOnOrAfter(s.getSessionNotOnOrAfter())
+					.setAuthenticationContext(
+						authnContext != null ?
+							new AuthenticationContext()
+								.setClassReference(AuthenticationContextClassReference.fromUrn(ref))
+								.setAuthenticatingAuthorities(authenticatingAuthoritiesUrns)
+							: null
+					)
 			);
 		}
 		return result;
@@ -1466,9 +1552,9 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 
 	protected Conditions getConditions(org.opensaml.saml.saml2.core.Conditions conditions) {
 		return new Conditions()
-				.setNotBefore(conditions.getNotBefore())
-				.setNotOnOrAfter(conditions.getNotOnOrAfter())
-				.setCriteria(getCriteria(conditions.getConditions()));
+			.setNotBefore(conditions.getNotBefore())
+			.setNotOnOrAfter(conditions.getNotOnOrAfter())
+			.setCriteria(getCriteria(conditions.getConditions()));
 	}
 
 	protected List<AssertionCondition> getCriteria(List<org.opensaml.saml.saml2.core.Condition> conditions) {
@@ -1476,15 +1562,15 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 		for (Condition c : conditions) {
 			if (c instanceof org.opensaml.saml.saml2.core.AudienceRestriction) {
 				org.opensaml.saml.saml2.core.AudienceRestriction aud =
-						(org.opensaml.saml.saml2.core.AudienceRestriction) c;
+					(org.opensaml.saml.saml2.core.AudienceRestriction) c;
 				if (aud.getAudiences() != null) {
 					result.add(
-							new AudienceRestriction()
-									.setAudiences(
-											aud.getAudiences().stream().map(
-													a -> a.getAudienceURI()
-											).collect(Collectors.toList())
-									)
+						new AudienceRestriction()
+							.setAudiences(
+								aud.getAudiences().stream().map(
+									a -> a.getAudienceURI()
+								).collect(Collectors.toList())
+							)
 					);
 				}
 			}
@@ -1498,30 +1584,30 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 	protected Subject getSubject(org.opensaml.saml.saml2.core.Subject subject, List<SimpleKey> localKeys) {
 
 		return new Subject()
-				.setPrincipal(getPrincipal(subject, localKeys))
-				.setConfirmations(getConfirmations(subject.getSubjectConfirmations(), localKeys))
-				;
+			.setPrincipal(getPrincipal(subject, localKeys))
+			.setConfirmations(getConfirmations(subject.getSubjectConfirmations(), localKeys))
+			;
 	}
 
 	protected List<SubjectConfirmation> getConfirmations(
-			List<org.opensaml.saml.saml2.core
-					.SubjectConfirmation> subjectConfirmations, List<SimpleKey> localKeys
+		List<org.opensaml.saml.saml2.core
+			.SubjectConfirmation> subjectConfirmations, List<SimpleKey> localKeys
 	) {
 		List<SubjectConfirmation> result = new LinkedList<>();
 		for (org.opensaml.saml.saml2.core.SubjectConfirmation s : subjectConfirmations) {
 			NameID nameID = getNameID(s.getNameID(), s.getEncryptedID(), localKeys);
 			result.add(
-					new SubjectConfirmation()
-							.setNameId(nameID != null ? nameID.getValue() : null)
-							.setFormat(nameID != null ? NameId.fromUrn(nameID.getFormat()) : null)
-							.setMethod(SubjectConfirmationMethod.fromUrn(s.getMethod()))
-							.setConfirmationData(
-									new SubjectConfirmationData()
-											.setRecipient(s.getSubjectConfirmationData().getRecipient())
-											.setNotOnOrAfter(s.getSubjectConfirmationData().getNotOnOrAfter())
-											.setNotBefore(s.getSubjectConfirmationData().getNotBefore())
-											.setInResponseTo(s.getSubjectConfirmationData().getInResponseTo())
-							)
+				new SubjectConfirmation()
+					.setNameId(nameID != null ? nameID.getValue() : null)
+					.setFormat(nameID != null ? NameId.fromUrn(nameID.getFormat()) : null)
+					.setMethod(SubjectConfirmationMethod.fromUrn(s.getMethod()))
+					.setConfirmationData(
+						new SubjectConfirmationData()
+							.setRecipient(s.getSubjectConfirmationData().getRecipient())
+							.setNotOnOrAfter(s.getSubjectConfirmationData().getNotOnOrAfter())
+							.setNotBefore(s.getSubjectConfirmationData().getNotBefore())
+							.setInResponseTo(s.getSubjectConfirmationData().getInResponseTo())
+					)
 			);
 		}
 		return result;
@@ -1539,11 +1625,11 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 
 	protected NameIdPrincipal getPrincipal(org.opensaml.saml.saml2.core.Subject subject, List<SimpleKey> localKeys) {
 		NameID p =
-				getNameID(
-						subject.getNameID(),
-						subject.getEncryptedID(),
-						localKeys
-				);
+			getNameID(
+				subject.getNameID(),
+				subject.getEncryptedID(),
+				localKeys
+			);
 		if (p != null) {
 			return getNameIdPrincipal(p);
 		}
@@ -1554,16 +1640,16 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 
 	protected NameIdPrincipal getNameIdPrincipal(NameID p) {
 		return new NameIdPrincipal()
-				.setSpNameQualifier(p.getSPNameQualifier())
-				.setNameQualifier(p.getNameQualifier())
-				.setFormat(NameId.fromUrn(p.getFormat()))
-				.setSpProvidedId(p.getSPProvidedID())
-				.setValue(p.getValue());
+			.setSpNameQualifier(p.getSPNameQualifier())
+			.setNameQualifier(p.getNameQualifier())
+			.setFormat(NameId.fromUrn(p.getFormat()))
+			.setSpProvidedId(p.getSPProvidedID())
+			.setValue(p.getValue());
 	}
 
 	protected org.opensaml.saml.saml2.core.Issuer toIssuer(Issuer issuer) {
 		org.opensaml.saml.saml2.core.Issuer result =
-				buildSAMLObject(org.opensaml.saml.saml2.core.Issuer.class);
+			buildSAMLObject(org.opensaml.saml.saml2.core.Issuer.class);
 		result.setValue(issuer.getValue());
 		if (issuer.getFormat() != null) {
 			result.setFormat(issuer.getFormat().toString());
@@ -1575,43 +1661,43 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 
 	protected Issuer getIssuer(org.opensaml.saml.saml2.core.Issuer issuer) {
 		return issuer == null ? null :
-				new Issuer()
-						.setValue(issuer.getValue())
-						.setFormat(NameId.fromUrn(issuer.getFormat()))
-						.setSpNameQualifier(issuer.getSPNameQualifier())
-						.setNameQualifier(issuer.getNameQualifier());
+			new Issuer()
+				.setValue(issuer.getValue())
+				.setFormat(NameId.fromUrn(issuer.getFormat()))
+				.setSpNameQualifier(issuer.getSPNameQualifier())
+				.setNameQualifier(issuer.getNameQualifier());
 	}
 
 	protected AuthenticationRequest resolveAuthenticationRequest(AuthnRequest parsed) {
 		AuthnRequest request = parsed;
 		AuthenticationRequest result = new AuthenticationRequest()
-				.setBinding(Binding.fromUrn(request.getProtocolBinding()))
-				.setAssertionConsumerService(
-						getEndpoint(
-								request.getAssertionConsumerServiceURL(),
-								Binding.fromUrn(request.getProtocolBinding()),
-								ofNullable(request.getAssertionConsumerServiceIndex()).orElse(-1),
-								false
-						)
+			.setBinding(Binding.fromUrn(request.getProtocolBinding()))
+			.setAssertionConsumerService(
+				getEndpoint(
+					request.getAssertionConsumerServiceURL(),
+					Binding.fromUrn(request.getProtocolBinding()),
+					ofNullable(request.getAssertionConsumerServiceIndex()).orElse(-1),
+					false
 				)
-				.setDestination(
-						getEndpoint(
-								request.getDestination(),
-								Binding.fromUrn(request.getProtocolBinding()),
-								-1,
-								false
-						)
+			)
+			.setDestination(
+				getEndpoint(
+					request.getDestination(),
+					Binding.fromUrn(request.getProtocolBinding()),
+					-1,
+					false
 				)
-				.setIssuer(getIssuer(request.getIssuer()))
-				.setForceAuth(request.isForceAuthn())
-				.setPassive(request.isPassive())
-				.setId(request.getID())
-				.setIssueInstant(request.getIssueInstant())
-				.setVersion(request.getVersion().toString())
-				.setRequestedAuthenticationContext(getRequestedAuthenticationContext(request))
-				.setAuthenticationContextClassReferences(getAuthenticationContextClassReferences(request))
-				.setNameIdPolicy(fromNameIDPolicy(request.getNameIDPolicy()))
-				.setScoping(fromScoping(request.getScoping()));
+			)
+			.setIssuer(getIssuer(request.getIssuer()))
+			.setForceAuth(request.isForceAuthn())
+			.setPassive(request.isPassive())
+			.setId(request.getID())
+			.setIssueInstant(request.getIssueInstant())
+			.setVersion(request.getVersion().toString())
+			.setRequestedAuthenticationContext(getRequestedAuthenticationContext(request))
+			.setAuthenticationContextClassReferences(getAuthenticationContextClassReferences(request))
+			.setNameIdPolicy(fromNameIDPolicy(request.getNameIDPolicy()))
+			.setScoping(fromScoping(request.getScoping()));
 		return result;
 	}
 
@@ -1620,8 +1706,8 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 		final RequestedAuthnContext context = request.getRequestedAuthnContext();
 		if (context != null && !CollectionUtils.isEmpty(context.getAuthnContextClassRefs())) {
 			result = context.getAuthnContextClassRefs().stream()
-					.map(ref -> AuthenticationContextClassReference.fromUrn(ref.getAuthnContextClassRef()))
-					.collect(Collectors.toList());
+				.map(ref -> AuthenticationContextClassReference.fromUrn(ref.getAuthnContextClassRef()))
+				.collect(Collectors.toList());
 		}
 		return result;
 	}
@@ -1772,17 +1858,17 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 
 	protected Endpoint getEndpoint(String url, Binding binding, int index, boolean isDefault) {
 		return
-				new Endpoint()
-						.setIndex(index)
-						.setBinding(binding)
-						.setLocation(url)
-						.setDefault(isDefault)
-						.setIndex(index);
+			new Endpoint()
+				.setIndex(index)
+				.setBinding(binding)
+				.setLocation(url)
+				.setDefault(isDefault)
+				.setIndex(index);
 	}
 
 	public NameIDFormat getNameIDFormat(NameId nameId) {
 		SAMLObjectBuilder<NameIDFormat> builder =
-				(SAMLObjectBuilder<NameIDFormat>) getBuilderFactory().getBuilder(NameIDFormat.DEFAULT_ELEMENT_NAME);
+			(SAMLObjectBuilder<NameIDFormat>) getBuilderFactory().getBuilder(NameIDFormat.DEFAULT_ELEMENT_NAME);
 		NameIDFormat format = builder.buildObject();
 		format.setFormat(nameId.toString());
 		return format;
@@ -1790,8 +1876,8 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 
 	public SingleSignOnService getSingleSignOnService(Endpoint endpoint, int index) {
 		SAMLObjectBuilder<SingleSignOnService> builder =
-				(SAMLObjectBuilder<SingleSignOnService>) getBuilderFactory()
-						.getBuilder(SingleSignOnService.DEFAULT_ELEMENT_NAME);
+			(SAMLObjectBuilder<SingleSignOnService>) getBuilderFactory()
+				.getBuilder(SingleSignOnService.DEFAULT_ELEMENT_NAME);
 		SingleSignOnService sso = builder.buildObject();
 		sso.setLocation(endpoint.getLocation());
 		sso.setBinding(endpoint.getBinding().toString());
@@ -1800,8 +1886,8 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 
 	public AssertionConsumerService getAssertionConsumerService(Endpoint endpoint, int index) {
 		SAMLObjectBuilder<AssertionConsumerService> builder =
-				(SAMLObjectBuilder<AssertionConsumerService>) getBuilderFactory()
-						.getBuilder(AssertionConsumerService.DEFAULT_ELEMENT_NAME);
+			(SAMLObjectBuilder<AssertionConsumerService>) getBuilderFactory()
+				.getBuilder(AssertionConsumerService.DEFAULT_ELEMENT_NAME);
 		AssertionConsumerService consumer = builder.buildObject();
 		consumer.setLocation(endpoint.getLocation());
 		consumer.setBinding(endpoint.getBinding().toString());
@@ -1812,8 +1898,8 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 
 	public SingleLogoutService getSingleLogoutService(Endpoint endpoint) {
 		SAMLObjectBuilder<SingleLogoutService> builder =
-				(SAMLObjectBuilder<SingleLogoutService>) getBuilderFactory()
-						.getBuilder(SingleLogoutService.DEFAULT_ELEMENT_NAME);
+			(SAMLObjectBuilder<SingleLogoutService>) getBuilderFactory()
+				.getBuilder(SingleLogoutService.DEFAULT_ELEMENT_NAME);
 		SingleLogoutService service = builder.buildObject();
 		service.setBinding(endpoint.getBinding().toString());
 		service.setLocation(endpoint.getLocation());
@@ -1822,8 +1908,8 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 
 	public KeyDescriptor getKeyDescriptor(SimpleKey key) {
 		SAMLObjectBuilder<KeyDescriptor> builder =
-				(SAMLObjectBuilder<KeyDescriptor>) getBuilderFactory()
-						.getBuilder(KeyDescriptor.DEFAULT_ELEMENT_NAME);
+			(SAMLObjectBuilder<KeyDescriptor>) getBuilderFactory()
+				.getBuilder(KeyDescriptor.DEFAULT_ELEMENT_NAME);
 		KeyDescriptor descriptor = builder.buildObject();
 
 		KeyStoreCredentialResolver resolver = getCredentialsResolver(key);
@@ -1845,7 +1931,7 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 
 	public KeyInfoGenerator getKeyInfoGenerator(Credential credential) {
 		NamedKeyInfoGeneratorManager manager = DefaultSecurityConfigurationBootstrap
-				.buildBasicKeyInfoGeneratorManager();
+			.buildBasicKeyInfoGeneratorManager();
 		return manager.getDefaultManager().getFactory(credential).newInstance();
 	}
 
@@ -1858,10 +1944,10 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 		Credential credential = getCredential(key, resolver);
 
 		XMLObjectBuilder<org.opensaml.xmlsec.signature.Signature> signatureBuilder =
-				(XMLObjectBuilder<org.opensaml.xmlsec.signature.Signature>) getBuilderFactory()
-						.getBuilder(org.opensaml.xmlsec.signature.Signature.DEFAULT_ELEMENT_NAME);
+			(XMLObjectBuilder<org.opensaml.xmlsec.signature.Signature>) getBuilderFactory()
+				.getBuilder(org.opensaml.xmlsec.signature.Signature.DEFAULT_ELEMENT_NAME);
 		org.opensaml.xmlsec.signature.Signature signature = signatureBuilder.buildObject(org.opensaml.xmlsec
-				.signature.Signature.DEFAULT_ELEMENT_NAME);
+			.signature.Signature.DEFAULT_ELEMENT_NAME);
 
 		signable.setSignature(signature);
 
@@ -1871,7 +1957,7 @@ public class OpenSamlImplementation extends SpringSecuritySaml<OpenSamlImplement
 		parameters.setSignatureAlgorithm(algorithm.toString());
 		parameters.setSignatureReferenceDigestMethod(digest.toString());
 		parameters.setSignatureCanonicalizationAlgorithm(
-				CanonicalizationMethod.ALGO_ID_C14N_EXCL_OMIT_COMMENTS.toString()
+			CanonicalizationMethod.ALGO_ID_C14N_EXCL_OMIT_COMMENTS.toString()
 		);
 
 		try {

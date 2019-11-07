@@ -17,14 +17,15 @@
 
 package org.springframework.security.saml.spi.opensaml;
 
+import java.io.Writer;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.security.saml.SamlTemplateEngine;
+
 import net.shibboleth.utilities.java.support.velocity.VelocityEngine;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.runtime.log.NullLogChute;
-import org.springframework.security.saml.SamlTemplateEngine;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.Writer;
-import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 

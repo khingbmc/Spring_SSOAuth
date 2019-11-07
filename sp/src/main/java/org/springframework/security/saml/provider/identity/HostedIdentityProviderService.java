@@ -17,7 +17,11 @@
 
 package org.springframework.security.saml.provider.identity;
 
-import org.joda.time.DateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.springframework.security.saml.SamlMetadataCache;
 import org.springframework.security.saml.SamlProviderNotFoundException;
 import org.springframework.security.saml.SamlTransformer;
@@ -26,13 +30,31 @@ import org.springframework.security.saml.key.SimpleKey;
 import org.springframework.security.saml.provider.AbstractHostedProviderService;
 import org.springframework.security.saml.provider.identity.config.LocalIdentityProviderConfiguration;
 import org.springframework.security.saml.saml2.Saml2Object;
-import org.springframework.security.saml.saml2.authentication.*;
-import org.springframework.security.saml.saml2.metadata.*;
+import org.springframework.security.saml.saml2.authentication.Assertion;
+import org.springframework.security.saml.saml2.authentication.AudienceRestriction;
+import org.springframework.security.saml.saml2.authentication.AuthenticationRequest;
+import org.springframework.security.saml.saml2.authentication.AuthenticationStatement;
+import org.springframework.security.saml.saml2.authentication.Conditions;
+import org.springframework.security.saml.saml2.authentication.Issuer;
+import org.springframework.security.saml.saml2.authentication.LogoutRequest;
+import org.springframework.security.saml.saml2.authentication.LogoutResponse;
+import org.springframework.security.saml.saml2.authentication.NameIdPrincipal;
+import org.springframework.security.saml.saml2.authentication.Response;
+import org.springframework.security.saml.saml2.authentication.Status;
+import org.springframework.security.saml.saml2.authentication.StatusCode;
+import org.springframework.security.saml.saml2.authentication.Subject;
+import org.springframework.security.saml.saml2.authentication.SubjectConfirmation;
+import org.springframework.security.saml.saml2.authentication.SubjectConfirmationData;
+import org.springframework.security.saml.saml2.authentication.SubjectConfirmationMethod;
+import org.springframework.security.saml.saml2.metadata.Endpoint;
+import org.springframework.security.saml.saml2.metadata.IdentityProviderMetadata;
+import org.springframework.security.saml.saml2.metadata.Metadata;
+import org.springframework.security.saml.saml2.metadata.NameId;
+import org.springframework.security.saml.saml2.metadata.ServiceProvider;
+import org.springframework.security.saml.saml2.metadata.ServiceProviderMetadata;
+import org.springframework.security.saml.saml2.metadata.SsoProvider;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import org.joda.time.DateTime;
 
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;

@@ -17,7 +17,12 @@
 package org.springframework.security.saml.spi;
 
 import java.time.Clock;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -125,7 +130,7 @@ class TimebasedMap<K, V> implements Map<K, V> {
 	public boolean containsValue(Object value) {
 		scanAndRemove();
 		if (value != null) {
-			for (Entry<K, MapEntry<V>> entry : map.entrySet()) {
+			for (Map.Entry<K, MapEntry<V>> entry : map.entrySet()) {
 				if (value.equals(entry.getValue().getValue())) {
 					return true;
 				}

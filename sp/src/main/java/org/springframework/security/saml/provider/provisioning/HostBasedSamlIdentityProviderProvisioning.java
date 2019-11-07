@@ -37,8 +37,8 @@ import org.springframework.security.saml.saml2.metadata.IdentityProviderMetadata
 import static org.springframework.util.StringUtils.hasText;
 
 public class HostBasedSamlIdentityProviderProvisioning
-		extends AbstractHostbasedSamlProviderProvisioning
-		implements SamlProviderProvisioning<IdentityProviderService> {
+	extends AbstractHostbasedSamlProviderProvisioning
+	implements SamlProviderProvisioning<IdentityProviderService> {
 
 
 	private AssertionEnhancer assertionEnhancer;
@@ -59,7 +59,7 @@ public class HostBasedSamlIdentityProviderProvisioning
 	@Override
 	public IdentityProviderService getHostedProvider() {
 		LocalIdentityProviderConfiguration config =
-				getConfigurationRepository().getServerConfiguration().getIdentityProvider();
+			getConfigurationRepository().getServerConfiguration().getIdentityProvider();
 		return getHostedIdentityProvider(config);
 	}
 
@@ -76,15 +76,15 @@ public class HostBasedSamlIdentityProviderProvisioning
 		String prefix = hasText(idpConfig.getPrefix()) ? idpConfig.getPrefix() : "saml/idp/";
 		String aliasPath = getAliasPath(idpConfig);
 		IdentityProviderMetadata metadata =
-				identityProviderMetadata(
-						basePath,
-						signingKey,
-						keys,
-						prefix,
-						aliasPath,
-						idpConfig.getDefaultSigningAlgorithm(),
-						idpConfig.getDefaultDigest()
-				);
+			identityProviderMetadata(
+				basePath,
+				signingKey,
+				keys,
+				prefix,
+				aliasPath,
+				idpConfig.getDefaultSigningAlgorithm(),
+				idpConfig.getDefaultDigest()
+			);
 
 		if (!idpConfig.getNameIds().isEmpty()) {
 			metadata.getIdentityProvider().setNameIds(idpConfig.getNameIds());
@@ -103,13 +103,13 @@ public class HostBasedSamlIdentityProviderProvisioning
 		metadata.getIdentityProvider().setWantAuthnRequestsSigned(idpConfig.isWantRequestsSigned());
 
 		return new HostedIdentityProviderService(
-				idpConfig,
-				metadata,
-				getTransformer(),
-				getValidator(),
-				getCache(),
-				assertionEnhancer,
-				responseEnhancer
+			idpConfig,
+			metadata,
+			getTransformer(),
+			getValidator(),
+			getCache(),
+			assertionEnhancer,
+			responseEnhancer
 		);
 	}
 

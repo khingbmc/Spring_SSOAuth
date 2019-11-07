@@ -1,13 +1,13 @@
 package org.springframework.security.saml.provider.config;
 
-import org.springframework.security.saml.provider.SamlServerConfiguration;
-import org.springframework.web.filter.OncePerRequestFilter;
-
+import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
+import org.springframework.security.saml.provider.SamlServerConfiguration;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import static java.util.Arrays.asList;
 import static org.springframework.util.StringUtils.hasText;

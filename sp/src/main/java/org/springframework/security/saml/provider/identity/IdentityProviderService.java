@@ -33,19 +33,19 @@ public interface IdentityProviderService extends
 		ServiceProviderMetadata> {
 
 	Assertion assertion(ServiceProviderMetadata sp,
-                        String principal,
-                        NameId principalFormat);
+						String principal,
+						NameId principalFormat);
 
 	Assertion assertion(ServiceProviderMetadata sp,
-                        AuthenticationRequest request,
-                        String principal,
-                        NameId principalFormat);
+						AuthenticationRequest request,
+						String principal,
+						NameId principalFormat);
 
 	Response response(Assertion assertion,
-                      ServiceProviderMetadata recipient);
+					  ServiceProviderMetadata recipient);
 
 	Response response(AuthenticationRequest authn,
-                      Assertion assertion,
-                      ServiceProviderMetadata recipient);
+					  Assertion assertion,
+					  ServiceProviderMetadata recipient);
 
 }

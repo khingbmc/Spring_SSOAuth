@@ -36,8 +36,8 @@ import org.springframework.security.saml.saml2.metadata.ServiceProviderMetadata;
 import static org.springframework.util.StringUtils.hasText;
 
 public class HostBasedSamlServiceProviderProvisioning
-		extends AbstractHostbasedSamlProviderProvisioning
-		implements SamlProviderProvisioning<ServiceProviderService> {
+	extends AbstractHostbasedSamlProviderProvisioning
+	implements SamlProviderProvisioning<ServiceProviderService> {
 
 	private final AuthenticationRequestEnhancer authnRequestEnhancer;
 
@@ -54,7 +54,7 @@ public class HostBasedSamlServiceProviderProvisioning
 	@Override
 	public ServiceProviderService getHostedProvider() {
 		LocalServiceProviderConfiguration config =
-				getConfigurationRepository().getServerConfiguration().getServiceProvider();
+			getConfigurationRepository().getServerConfiguration().getServiceProvider();
 		return getHostedServiceProvider(config);
 	}
 
@@ -71,15 +71,15 @@ public class HostBasedSamlServiceProviderProvisioning
 		String prefix = hasText(spConfig.getPrefix()) ? spConfig.getPrefix() : "saml/sp/";
 		String aliasPath = getAliasPath(spConfig);
 		ServiceProviderMetadata metadata =
-				serviceProviderMetadata(
-						basePath,
-						signingKey,
-						keys,
-						prefix,
-						aliasPath,
-						spConfig.getDefaultSigningAlgorithm(),
-						spConfig.getDefaultDigest()
-				);
+			serviceProviderMetadata(
+				basePath,
+				signingKey,
+				keys,
+				prefix,
+				aliasPath,
+				spConfig.getDefaultSigningAlgorithm(),
+				spConfig.getDefaultDigest()
+			);
 		if (!spConfig.getNameIds().isEmpty()) {
 			metadata.getServiceProvider().setNameIds(spConfig.getNameIds());
 		}
@@ -97,12 +97,12 @@ public class HostBasedSamlServiceProviderProvisioning
 		metadata.getServiceProvider().setAuthnRequestsSigned(spConfig.isSignRequests());
 
 		return new HostedServiceProviderService(
-				spConfig,
-				metadata,
-				getTransformer(),
-				getValidator(),
-				getCache(),
-				authnRequestEnhancer
+			spConfig,
+			metadata,
+			getTransformer(),
+			getValidator(),
+			getCache(),
+			authnRequestEnhancer
 		);
 	}
 }

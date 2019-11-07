@@ -17,13 +17,13 @@
 
 package org.springframework.security.saml.provider.config;
 
-import org.springframework.security.saml.saml2.metadata.NameId;
-import org.springframework.security.saml.saml2.signature.AlgorithmMethod;
-import org.springframework.security.saml.saml2.signature.DigestMethod;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.security.saml.saml2.metadata.NameId;
+import org.springframework.security.saml.saml2.signature.AlgorithmMethod;
+import org.springframework.security.saml.saml2.signature.DigestMethod;
 
 import static org.springframework.util.StringUtils.hasText;
 

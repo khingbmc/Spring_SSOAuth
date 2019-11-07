@@ -17,6 +17,8 @@
 
 package org.springframework.security.saml.provider;
 
+import java.util.List;
+
 import org.springframework.security.saml.provider.config.ExternalProviderConfiguration;
 import org.springframework.security.saml.provider.config.LocalProviderConfiguration;
 import org.springframework.security.saml.saml2.Saml2Object;
@@ -27,8 +29,6 @@ import org.springframework.security.saml.saml2.metadata.Binding;
 import org.springframework.security.saml.saml2.metadata.Endpoint;
 import org.springframework.security.saml.saml2.metadata.Metadata;
 import org.springframework.security.saml.validation.ValidationResult;
-
-import java.util.List;
 
 public interface HostedProviderService<
 	Configuration extends LocalProviderConfiguration,
@@ -42,10 +42,10 @@ public interface HostedProviderService<
 	List<RemoteMetadata> getRemoteProviders();
 
 	LogoutRequest logoutRequest(RemoteMetadata recipient,
-                                NameIdPrincipal principal);
+								NameIdPrincipal principal);
 
 	LogoutResponse logoutResponse(LogoutRequest request,
-                                  RemoteMetadata recipient);
+								  RemoteMetadata recipient);
 
 	RemoteMetadata getRemoteProvider(Saml2Object saml2Object);
 
@@ -64,7 +64,7 @@ public interface HostedProviderService<
 	String toEncodedXml(String xml, boolean deflate);
 
 	Endpoint getPreferredEndpoint(List<Endpoint> endpoints,
-                                  Binding preferredBinding,
-                                  int preferredIndex);
+								  Binding preferredBinding,
+								  int preferredIndex);
 
 }

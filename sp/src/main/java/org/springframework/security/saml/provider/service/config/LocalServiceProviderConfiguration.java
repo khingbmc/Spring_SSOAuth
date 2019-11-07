@@ -26,7 +26,7 @@ public class LocalServiceProviderConfiguration extends
 	private boolean wantAssertionsSigned = false;
 
 	public LocalServiceProviderConfiguration() {
-		super("org/springframework/security/saml/sp");
+		super("saml/sp");
 	}
 
 	public boolean isSignRequests() {

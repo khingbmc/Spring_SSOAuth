@@ -17,10 +17,10 @@
 
 package org.springframework.security.saml.saml2.metadata;
 
-import org.springframework.security.saml.SamlException;
-
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import org.springframework.security.saml.SamlException;
 
 import static org.springframework.util.StringUtils.hasText;
 

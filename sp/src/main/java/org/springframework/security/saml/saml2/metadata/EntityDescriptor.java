@@ -16,16 +16,17 @@
  */
 package org.springframework.security.saml.saml2.metadata;
 
-import org.joda.time.DateTime;
+import java.util.LinkedList;
+import java.util.List;
+import javax.xml.datatype.Duration;
+
 import org.springframework.security.saml.key.SimpleKey;
 import org.springframework.security.saml.saml2.ImplementationHolder;
 import org.springframework.security.saml.saml2.signature.AlgorithmMethod;
 import org.springframework.security.saml.saml2.signature.DigestMethod;
 import org.springframework.security.saml.saml2.signature.Signature;
 
-import javax.xml.datatype.Duration;
-import java.util.LinkedList;
-import java.util.List;
+import org.joda.time.DateTime;
 
 /**
  * Defines EntityDescriptor as defined by

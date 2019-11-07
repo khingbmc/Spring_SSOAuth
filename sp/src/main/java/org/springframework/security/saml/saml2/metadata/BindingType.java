@@ -17,20 +17,18 @@
 
 package org.springframework.security.saml.saml2.metadata;
 
-import org.springframework.security.saml.SamlException;
-import org.springframework.util.Assert;
-
-import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
+import javax.annotation.Nonnull;
+
+import org.springframework.security.saml.SamlException;
+import org.springframework.util.Assert;
 
 /**
  * Defines binding type as part of an Endpoint as defined by
  * https://www.oasis-open.org/committees/download.php/35391/sstc-saml-metadata-errata-2.0-wd-04-diff.pdf
  * Page 8, Line 271
  */
-@NotNull
-
 public enum BindingType {
 
 	POST("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"),
@@ -49,7 +47,7 @@ public enum BindingType {
 
 	private final String urn;
 
-	BindingType(@NotNull String urn) {
+	BindingType(@Nonnull String urn) {
 		this.urn = urn;
 	}
 

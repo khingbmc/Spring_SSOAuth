@@ -18,12 +18,12 @@
 package org.springframework.security.saml.saml2.authentication;
 
 
-import org.springframework.security.saml.SamlException;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import org.springframework.security.saml.SamlException;
 
 import static org.springframework.security.saml.saml2.authentication.AuthenticationContextClassReference.AuthenticationContextClassReferenceType.UNSPECIFIED;
 

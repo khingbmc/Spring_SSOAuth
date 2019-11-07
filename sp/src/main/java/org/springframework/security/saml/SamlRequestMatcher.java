@@ -17,14 +17,17 @@
 
 package org.springframework.security.saml;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.security.saml.provider.HostedProviderService;
 import org.springframework.security.saml.provider.provisioning.SamlProviderProvisioning;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import javax.servlet.http.HttpServletRequest;
-
-import static org.springframework.security.saml.util.StringUtils.*;
+import static org.springframework.security.saml.util.StringUtils.addAliasPath;
+import static org.springframework.security.saml.util.StringUtils.appendSlash;
+import static org.springframework.security.saml.util.StringUtils.stripEndingSlases;
+import static org.springframework.security.saml.util.StringUtils.stripSlashes;
 
 public class SamlRequestMatcher implements RequestMatcher {
 

@@ -17,13 +17,19 @@
 
 package org.springframework.security.saml.provider.service.config;
 
+import javax.servlet.Filter;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.saml.provider.SamlProviderLogoutFilter;
 import org.springframework.security.saml.provider.SamlServerConfiguration;
 import org.springframework.security.saml.provider.config.AbstractSamlServerBeanConfiguration;
 import org.springframework.security.saml.provider.provisioning.HostBasedSamlServiceProviderProvisioning;
 import org.springframework.security.saml.provider.provisioning.SamlProviderProvisioning;
-import org.springframework.security.saml.provider.service.*;
+import org.springframework.security.saml.provider.service.AuthenticationRequestEnhancer;
+import org.springframework.security.saml.provider.service.SamlAuthenticationRequestFilter;
+import org.springframework.security.saml.provider.service.SelectIdentityProviderFilter;
+import org.springframework.security.saml.provider.service.ServiceProviderMetadataFilter;
+import org.springframework.security.saml.provider.service.ServiceProviderService;
 import org.springframework.security.saml.provider.service.authentication.GenericErrorAuthenticationFailureHandler;
 import org.springframework.security.saml.provider.service.authentication.SamlAuthenticationResponseFilter;
 import org.springframework.security.saml.provider.service.authentication.ServiceProviderLogoutHandler;
@@ -31,8 +37,6 @@ import org.springframework.security.saml.provider.service.authentication.SimpleA
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
-
-import javax.servlet.Filter;
 
 public abstract class SamlServiceProviderServerBeanConfiguration
 	extends AbstractSamlServerBeanConfiguration<ServiceProviderService> {

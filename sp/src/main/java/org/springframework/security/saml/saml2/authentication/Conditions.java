@@ -17,11 +17,11 @@
 
 package org.springframework.security.saml.saml2.authentication;
 
-import org.joda.time.DateTime;
-
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.joda.time.DateTime;
 
 /**
  * Implementation saml:ConditionsType as defined by

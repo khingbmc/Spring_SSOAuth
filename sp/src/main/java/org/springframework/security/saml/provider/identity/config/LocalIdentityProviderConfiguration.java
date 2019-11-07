@@ -34,7 +34,7 @@ public class LocalIdentityProviderConfiguration extends
 	private long sessionNotOnOrAfter = 30 * 60 * 1000;
 
 	public LocalIdentityProviderConfiguration() {
-		super("org/springframework/security/saml/idp/");
+		super("saml/idp/");
 	}
 
 	public boolean isWantRequestsSigned() {

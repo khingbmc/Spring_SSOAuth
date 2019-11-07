@@ -17,13 +17,13 @@
 
 package org.springframework.security.saml.provider.config;
 
-import org.springframework.security.saml.key.SimpleKey;
-
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import org.springframework.security.saml.key.SimpleKey;
 
 import static java.util.Optional.ofNullable;
 

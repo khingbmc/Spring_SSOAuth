@@ -72,8 +72,8 @@ public abstract class AbstractHostbasedSamlProviderProvisioning {
 
 	protected String getAliasPath(LocalProviderConfiguration configuration) {
 		return hasText(configuration.getAlias()) ?
-				UriUtils.encode(configuration.getAlias(), StandardCharsets.ISO_8859_1.name()) :
-				UriUtils.encode(configuration.getEntityId(), StandardCharsets.ISO_8859_1.name());
+			UriUtils.encode(configuration.getAlias(), StandardCharsets.ISO_8859_1.name()) :
+			UriUtils.encode(configuration.getEntityId(), StandardCharsets.ISO_8859_1.name());
 	}
 
 	protected IdentityProviderMetadata identityProviderMetadata(String baseUrl,
@@ -85,28 +85,28 @@ public abstract class AbstractHostbasedSamlProviderProvisioning {
 																DigestMethod signDigest) {
 
 		return new IdentityProviderMetadata()
-				.setEntityId(baseUrl)
-				.setId("IDPM"+UUID.randomUUID().toString())
-				.setSigningKey(signingKey, signAlgorithm, signDigest)
-				.setProviders(
-						asList(
-								new org.springframework.security.saml.saml2.metadata.IdentityProvider()
-										.setWantAuthnRequestsSigned(true)
-										.setSingleSignOnService(
-												asList(
-														getEndpoint(baseUrl, prefix + "SSO/alias/" + aliasPath, Binding.POST, 0, true),
-														getEndpoint(baseUrl, prefix + "SSO/alias/" + aliasPath, REDIRECT, 1, false)
-												)
-										)
-										.setNameIds(asList(NameId.PERSISTENT, NameId.EMAIL))
-										.setKeys(keys)
-										.setSingleLogoutService(
-												asList(
-														getEndpoint(baseUrl, prefix + "logout/alias/" + aliasPath, REDIRECT, 0, true)
-												)
-										)
+			.setEntityId(baseUrl)
+			.setId("IDPM"+UUID.randomUUID().toString())
+			.setSigningKey(signingKey, signAlgorithm, signDigest)
+			.setProviders(
+				asList(
+					new org.springframework.security.saml.saml2.metadata.IdentityProvider()
+						.setWantAuthnRequestsSigned(true)
+						.setSingleSignOnService(
+							asList(
+								getEndpoint(baseUrl, prefix + "SSO/alias/" + aliasPath, Binding.POST, 0, true),
+								getEndpoint(baseUrl, prefix + "SSO/alias/" + aliasPath, REDIRECT, 1, false)
+							)
 						)
-				);
+						.setNameIds(asList(NameId.PERSISTENT, NameId.EMAIL))
+						.setKeys(keys)
+						.setSingleLogoutService(
+							asList(
+								getEndpoint(baseUrl, prefix + "logout/alias/" + aliasPath, REDIRECT, 0, true)
+							)
+						)
+				)
+			);
 
 	}
 
@@ -130,12 +130,12 @@ public abstract class AbstractHostbasedSamlProviderProvisioning {
 
 	protected Endpoint getEndpoint(String url, Binding binding, int index, boolean isDefault) {
 		return
-				new Endpoint()
-						.setIndex(index)
-						.setBinding(binding)
-						.setLocation(url)
-						.setDefault(isDefault)
-						.setIndex(index);
+			new Endpoint()
+				.setIndex(index)
+				.setBinding(binding)
+				.setLocation(url)
+				.setDefault(isDefault)
+				.setIndex(index);
 	}
 
 	protected ServiceProviderService getHostedServiceProvider(LocalServiceProviderConfiguration spConfig) {
@@ -151,30 +151,30 @@ public abstract class AbstractHostbasedSamlProviderProvisioning {
 															  DigestMethod signDigest) {
 
 		return new ServiceProviderMetadata()
-				.setEntityId(baseUrl)
-				.setId("SPM"+UUID.randomUUID().toString())
-				.setSigningKey(signingKey, signAlgorithm, signDigest)
-				.setProviders(
-						asList(
-								new org.springframework.security.saml.saml2.metadata.ServiceProvider()
-										.setKeys(keys)
-										.setWantAssertionsSigned(true)
-										.setAuthnRequestsSigned(signingKey != null)
-										.setAssertionConsumerService(
-												asList(
-														getEndpoint(baseUrl, prefix + "SSO/alias/" + aliasPath, Binding.POST, 0, true),
-														getEndpoint(baseUrl, prefix + "SSO/alias/" + aliasPath, REDIRECT, 1, false)
-												)
-										)
-										.setNameIds(asList(NameId.PERSISTENT, NameId.EMAIL))
-										.setKeys(keys)
-										.setSingleLogoutService(
-												asList(
-														getEndpoint(baseUrl, prefix + "logout/alias/" + aliasPath, REDIRECT, 0, true)
-												)
-										)
+			.setEntityId(baseUrl)
+			.setId("SPM"+UUID.randomUUID().toString())
+			.setSigningKey(signingKey, signAlgorithm, signDigest)
+			.setProviders(
+				asList(
+					new org.springframework.security.saml.saml2.metadata.ServiceProvider()
+						.setKeys(keys)
+						.setWantAssertionsSigned(true)
+						.setAuthnRequestsSigned(signingKey != null)
+						.setAssertionConsumerService(
+							asList(
+								getEndpoint(baseUrl, prefix + "SSO/alias/" + aliasPath, Binding.POST, 0, true),
+								getEndpoint(baseUrl, prefix + "SSO/alias/" + aliasPath, REDIRECT, 1, false)
+							)
 						)
-				);
+						.setNameIds(asList(NameId.PERSISTENT, NameId.EMAIL))
+						.setKeys(keys)
+						.setSingleLogoutService(
+							asList(
+								getEndpoint(baseUrl, prefix + "logout/alias/" + aliasPath, REDIRECT, 0, true)
+							)
+						)
+				)
+			);
 	}
 
 

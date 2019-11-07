@@ -16,10 +16,11 @@
  */
 package org.springframework.security.saml.util;
 
-import org.apache.http.client.utils.URIBuilder;
+import java.net.URISyntaxException;
+
 import org.springframework.security.saml.SamlException;
 
-import java.net.URISyntaxException;
+import org.apache.http.client.utils.URIBuilder;
 
 public class StringUtils {
 

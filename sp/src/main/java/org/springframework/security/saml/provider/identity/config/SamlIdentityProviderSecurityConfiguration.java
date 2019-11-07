@@ -16,11 +16,12 @@
  */
 package org.springframework.security.saml.provider.identity.config;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.saml.provider.config.AbstractProviderSecurityConfiguration;
 import org.springframework.security.saml.provider.identity.IdentityProviderService;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import static org.springframework.security.saml.util.StringUtils.stripSlashes;
 
@@ -32,7 +33,7 @@ public abstract class SamlIdentityProviderSecurityConfiguration
 	private final SamlIdentityProviderServerBeanConfiguration configuration;
 
 	public SamlIdentityProviderSecurityConfiguration(SamlIdentityProviderServerBeanConfiguration configuration) {
-		this("org/springframework/security/saml/idp/", configuration);
+		this("saml/idp/", configuration);
 	}
 
 	public SamlIdentityProviderSecurityConfiguration(String prefix,

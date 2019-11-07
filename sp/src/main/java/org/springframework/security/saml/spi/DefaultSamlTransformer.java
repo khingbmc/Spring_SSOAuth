@@ -17,12 +17,12 @@
 
 package org.springframework.security.saml.spi;
 
+import java.util.List;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.saml.SamlTransformer;
 import org.springframework.security.saml.key.SimpleKey;
 import org.springframework.security.saml.saml2.Saml2Object;
-
-import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 

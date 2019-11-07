@@ -16,10 +16,10 @@
  */
 package org.springframework.security.saml.saml2.metadata;
 
-import org.springframework.security.saml.saml2.attribute.Attribute;
-
 import java.util.LinkedList;
 import java.util.List;
+
+import org.springframework.security.saml.saml2.attribute.Attribute;
 
 /**
  * Defines md:SPSSODescriptorType as defined by

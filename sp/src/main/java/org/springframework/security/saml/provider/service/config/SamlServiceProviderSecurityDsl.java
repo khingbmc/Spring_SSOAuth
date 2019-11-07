@@ -17,6 +17,11 @@
 
 package org.springframework.security.saml.provider.service.config;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.servlet.Filter;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -28,20 +33,17 @@ import org.springframework.security.saml.saml2.signature.AlgorithmMethod;
 import org.springframework.security.saml.saml2.signature.DigestMethod;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import javax.servlet.Filter;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static java.util.Arrays.asList;
-import static org.springframework.security.saml.saml2.metadata.NameId.*;
+import static org.springframework.security.saml.saml2.metadata.NameId.EMAIL;
+import static org.springframework.security.saml.saml2.metadata.NameId.PERSISTENT;
+import static org.springframework.security.saml.saml2.metadata.NameId.UNSPECIFIED;
 import static org.springframework.security.saml.saml2.signature.AlgorithmMethod.RSA_SHA256;
 import static org.springframework.security.saml.saml2.signature.DigestMethod.SHA256;
 
 public class SamlServiceProviderSecurityDsl
 	extends AbstractHttpConfigurer<SamlServiceProviderSecurityDsl, HttpSecurity> {
 
-	private String prefix = "org/springframework/security/saml/sp/";
+	private String prefix = "saml/sp/";
 	private boolean useStandardFilterConfiguration = true;
 	private List<Filter> filters = new LinkedList<>();
 	private SamlServerConfiguration configuration = new SamlServerConfiguration()

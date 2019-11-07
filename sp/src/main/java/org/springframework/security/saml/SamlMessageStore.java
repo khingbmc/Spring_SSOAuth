@@ -17,9 +17,9 @@
 
 package org.springframework.security.saml;
 
-import org.springframework.security.saml.saml2.Saml2Object;
-
 import java.util.List;
+
+import org.springframework.security.saml.saml2.Saml2Object;
 
 /**
  * Interface to implement a message store.

@@ -17,9 +17,9 @@
 
 package org.springframework.security.saml.saml2.authentication;
 
-import org.joda.time.DateTime;
-
 import java.time.Clock;
+
+import org.joda.time.DateTime;
 
 public abstract class AssertionCondition<T extends AssertionCondition, EvaluationCritera> {
 

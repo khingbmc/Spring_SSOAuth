@@ -55,8 +55,8 @@ public class SelectServiceProviderFilter extends SamlFilter<IdentityProviderServ
 
 	public SelectServiceProviderFilter(SamlProviderProvisioning<IdentityProviderService> provisioning) {
 		this(
-				provisioning,
-				new SamlRequestMatcher(provisioning, "select")
+			provisioning,
+			new SamlRequestMatcher(provisioning, "select")
 		);
 	}
 
@@ -77,38 +77,38 @@ public class SelectServiceProviderFilter extends SamlFilter<IdentityProviderServ
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-			throws ServletException, IOException {
+		throws ServletException, IOException {
 		if (requestMatcher.matches(request)) {
 			List<ModelProvider> providers = new LinkedList<>();
 			IdentityProviderService provider = getProvisioning().getHostedProvider();
 			LocalIdentityProviderConfiguration configuration = provider.getConfiguration();
 
 			configuration.getProviders().stream().forEach(
-					p -> {
-						try {
-							ModelProvider mp =
-									new ModelProvider()
-											.setLinkText(p.getLinktext())
-											.setRedirect(getIdpInitUrl(request, p));
-							providers.add(mp);
-						} catch (Exception x) {
-							logger.debug(format(
-									"Unable to retrieve metadata for provider:%s with message:",
-									p.getMetadata(),
-									x.getMessage()
-									)
-							);
-						}
+				p -> {
+					try {
+						ModelProvider mp =
+							new ModelProvider()
+								.setLinkText(p.getLinktext())
+								.setRedirect(getIdpInitUrl(request, p));
+						providers.add(mp);
+					} catch (Exception x) {
+						logger.debug(format(
+							"Unable to retrieve metadata for provider:%s with message:",
+							p.getMetadata(),
+							x.getMessage()
+							)
+						);
 					}
+				}
 			);
 			Map<String, Object> model = new HashMap<>();
 			model.put("title", "Select a Service Provider");
 			model.put("providers", providers);
 			processHtml(
-					request,
-					response,
-					selectTemplate,
-					model
+				request,
+				response,
+				selectTemplate,
+				model
 			);
 		}
 		else {
@@ -118,9 +118,9 @@ public class SelectServiceProviderFilter extends SamlFilter<IdentityProviderServ
 	}
 
 	protected String getIdpInitUrl(HttpServletRequest request, ExternalProviderConfiguration p)
-			throws UnsupportedEncodingException {
+		throws UnsupportedEncodingException {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(
-				getProvisioning().getHostedProvider().getConfiguration().getBasePath()
+			getProvisioning().getHostedProvider().getConfiguration().getBasePath()
 		);
 		builder.pathSegment(getInitPath(request));
 		IdentityProviderService provider = getProvisioning().getHostedProvider();

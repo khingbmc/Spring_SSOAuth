@@ -51,7 +51,7 @@ public interface SamlKeyStoreProvider {
 				//RSAPrivateKey privateKey = X509Utilities.getPrivateKey(keybytes, "RSA");
 
 				ks.setKeyEntry(key.getName(), pkey, key.getPassphrase().toCharArray(), new
-						Certificate[]{certificate});
+					Certificate[]{certificate});
 			}
 
 			return ks;

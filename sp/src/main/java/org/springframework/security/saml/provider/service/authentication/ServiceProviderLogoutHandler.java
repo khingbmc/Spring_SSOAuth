@@ -83,10 +83,10 @@ public class ServiceProviderLogoutHandler implements LogoutHandler {
 										 String logoutRequest) throws IOException {
 		ServiceProviderService provider = provisioning.getHostedProvider();
 		LogoutRequest lr = provider.fromXml(
-				logoutRequest,
-				true,
-				HttpMethod.GET.name().equalsIgnoreCase(request.getMethod()),
-				LogoutRequest.class
+			logoutRequest,
+			true,
+			HttpMethod.GET.name().equalsIgnoreCase(request.getMethod()),
+			LogoutRequest.class
 		);
 		ValidationResult validate = provider.validate(lr);
 		if (validate.hasErrors()) {
@@ -96,11 +96,11 @@ public class ServiceProviderLogoutHandler implements LogoutHandler {
 		IdentityProviderMetadata idp = provider.getRemoteProvider(lr);
 		LogoutResponse logoutResponse = provider.logoutResponse(lr, idp);
 		String url = getRedirectUrl(
-				provider,
-				logoutResponse,
-				logoutResponse.getDestination(),
-				"SAMLResponse",
-				request.getParameter("RelayState")
+			provider,
+			logoutResponse,
+			logoutResponse.getDestination(),
+			"SAMLResponse",
+			request.getParameter("RelayState")
 		);
 		response.sendRedirect(url);
 		request.setAttribute(RUN_SUCCESS, SamlLogoutSuccessHandler.LogoutStatus.REDIRECT);
@@ -126,14 +126,14 @@ public class ServiceProviderLogoutHandler implements LogoutHandler {
 			if (lr.getDestination() != null) {
 				logger.debug("Sending logout request through redirect.");
 				String redirect = getRedirectUrl(
-						provider,
-						lr,
-						lr.getDestination().getLocation(),
-						"SAMLRequest",
-						getLogoutRelayState(
-								request,
-								idp
-						)
+					provider,
+					lr,
+					lr.getDestination().getLocation(),
+					"SAMLRequest",
+					getLogoutRelayState(
+						request,
+						idp
+					)
 				);
 				response.sendRedirect(redirect);
 			}
@@ -152,7 +152,7 @@ public class ServiceProviderLogoutHandler implements LogoutHandler {
 								  String location,
 								  String paramName,
 								  String relayState)
-			throws UnsupportedEncodingException {
+		throws UnsupportedEncodingException {
 		String xml = provider.toXml(lr);
 		String value = provider.toEncodedXml(xml, true);
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(location);
@@ -160,7 +160,7 @@ public class ServiceProviderLogoutHandler implements LogoutHandler {
 			builder.queryParam("RelayState", UriUtils.encode(relayState, StandardCharsets.UTF_8.name()));
 		}
 		return builder.queryParam(paramName, UriUtils.encode(value, StandardCharsets.UTF_8.name()))
-				.build()
-				.toUriString();
+			.build()
+			.toUriString();
 	}
 }

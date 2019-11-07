@@ -16,12 +16,13 @@
  */
 package org.springframework.security.saml.provider.service.config;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.saml.provider.config.AbstractProviderSecurityConfiguration;
 import org.springframework.security.saml.provider.service.ServiceProviderService;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import static org.springframework.security.saml.util.StringUtils.stripSlashes;
 
@@ -33,7 +34,7 @@ public abstract class SamlServiceProviderSecurityConfiguration
 	private SamlServiceProviderServerBeanConfiguration configuration;
 
 	public SamlServiceProviderSecurityConfiguration(SamlServiceProviderServerBeanConfiguration configuration) {
-		this("org/springframework/security/saml/sp/", configuration);
+		this("saml/sp/", configuration);
 	}
 
 	public SamlServiceProviderSecurityConfiguration(String prefix,

@@ -17,13 +17,13 @@
 
 package org.springframework.security.saml.saml2.authentication;
 
-import org.springframework.security.saml.key.SimpleKey;
-import org.springframework.security.saml.saml2.signature.AlgorithmMethod;
-import org.springframework.security.saml.saml2.signature.DigestMethod;
-
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.springframework.security.saml.key.SimpleKey;
+import org.springframework.security.saml.saml2.signature.AlgorithmMethod;
+import org.springframework.security.saml.saml2.signature.DigestMethod;
 
 /**
  * Implementation samlp:ResponseType as defined by

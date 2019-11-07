@@ -16,11 +16,11 @@
  */
 package org.springframework.security.saml.spi;
 
+import java.time.Clock;
+
 import org.springframework.security.saml.SamlMetadataCache;
 import org.springframework.security.saml.SamlProviderNotFoundException;
 import org.springframework.web.client.RestOperations;
-
-import java.time.Clock;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
