@@ -156,7 +156,7 @@ spring:
           #          metadata: http://localhost:8082/uaa/saml/metadata
           #          link-text: Cloud Foundry UAA SP
           - alias: spring-security-saml-sp
-            metadata: http://localhost:8080/saml/sp/metadata
+            metadata: http://localhost  :8080/saml/sp/metadata
             linktext: Spring Security SAML SP
           - alias: simplesamlphp
             metadata: http://simplesaml-for-spring-saml.cfapps.io/module.php/saml/sp/metadata.php/default-sp
