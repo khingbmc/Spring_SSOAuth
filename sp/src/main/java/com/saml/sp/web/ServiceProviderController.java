@@ -26,5 +26,13 @@ public class ServiceProviderController {
         logger.info("Sample SP Application - You are logged in!");
         return "logged-in";
     }
+    @RequestMapping(value = {"/test"})
+    public String test() {
+        return "test";
+    }
+    @RequestMapping(value = {"/data"})
+    public String data(){
+        return "data";
+    }
 
 }
