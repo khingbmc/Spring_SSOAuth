@@ -29,6 +29,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                 .password("password")
                 .roles("USER")
                 .build();
+//        UserDetails userDetails = User.with
         return new InMemoryUserDetailsManager(userDetails);
     }
 }
