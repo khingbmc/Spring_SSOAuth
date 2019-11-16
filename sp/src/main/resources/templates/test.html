@@ -1,0 +1,16 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8">
+    <title>TEST</title>
+</head>
+<body>
+    <h1>TEST AUTHEN</h1>
+    <form action="#" th:action="@{/data}" method="post">
+        <input type="submit" value="NOT SECRET" />
+    </form>
+    <form action="#" th:action="@{/logged-in}" method="post">
+        <input type="submit" value="SECRET" />
+    </form>
+<!--    th:action="@{/saml/sp/logout}"-->
+</body>
+</html>
