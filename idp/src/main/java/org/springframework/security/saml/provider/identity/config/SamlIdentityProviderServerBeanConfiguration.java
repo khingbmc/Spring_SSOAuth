@@ -18,7 +18,6 @@
 package org.springframework.security.saml.provider.identity.config;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.saml.provider.SamlProviderLogoutFilter;
 import org.springframework.security.saml.provider.SamlServerConfiguration;
 import org.springframework.security.saml.provider.config.AbstractSamlServerBeanConfiguration;
@@ -84,6 +83,4 @@ public abstract class SamlIdentityProviderServerBeanConfiguration
 	@Override
 	@Bean(name = "idpSamlServerConfiguration")
 	protected abstract SamlServerConfiguration getDefaultHostSamlServerConfiguration();
-
-    public abstract UserDetailsService userDetailsService();
 }
