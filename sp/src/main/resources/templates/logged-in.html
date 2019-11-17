@@ -9,6 +9,7 @@
         <span style="font-weight:bold">User: </span><span sec:authentication="name"></span>
     </div>
     <div style="float:none">&nbsp;</div>
+    <span th:text="${username}"></span>
     <div style="float:right">
         <form action="#" th:action="@{/saml/sp/logout}" method="post">
             <input type="submit" value="Logout" />
