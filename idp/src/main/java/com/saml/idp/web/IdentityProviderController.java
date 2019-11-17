@@ -3,13 +3,15 @@ package com.saml.idp.web;
 
 import com.saml.idp.model.User;
 import com.saml.idp.service.UserService;
+import com.saml.idp.validator.UserValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,21 +27,57 @@ public class IdentityProviderController {
         return "redirect:/saml/idp/select";
     }
 
-    UserService userService;
+    @Autowired
+    private UserValidator userValidator;
+    @Autowired
+    private UserService userService;
 
-    List<User> users = new ArrayList<>(Arrays.asList(
-            new User("khingbmc", "172542", "172542")
-    ));
+    @GetMapping("/registration")
+    public String registration(Model model) {
+        model.addAttribute("userForm", new User());
 
-    @RequestMapping( "/getallUser")
-    public List<User> getAllUser() {
-        return userService.getAllUsers();
+        return "registration";
     }
 
-    @RequestMapping(value = "/addUser", method = RequestMethod.POST)
-    public void addUser(@RequestBody User user){
-        userService.addUser(user);
+    @PostMapping("/registration")
+    public String registration(@ModelAttribute("userForm") User userForm, BindingResult bindingResult) {
+        userValidator.validate(userForm, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            return "registration";
+        }
+
+        userService.save(userForm);
+
+        return "redirect:/saml/idp/select";
     }
+
+    @GetMapping("/login")
+    public String login(Model model, String error, String logout) {
+        if (error != null)
+            model.addAttribute("error", "Your username and password is invalid.");
+
+        if (logout != null)
+            model.addAttribute("message", "You have been logged out successfully.");
+
+        return "login";
+    }
+
+//    UserService userService;
+
+//    List<User> users = new ArrayList<>(Arrays.asList(
+//            new User("khingbmc", "172542", "172542")
+//    ));
+
+//    @RequestMapping( "/getallUser")
+//    public List<User> getAllUser() {
+//        return userService.getAllUsers();
+//    }
+//
+//    @RequestMapping(value = "/addUser", method = RequestMethod.POST)
+//    public void addUser(@RequestBody User user){
+//        userService.addUser(user);
+//    }
 
 
 }
