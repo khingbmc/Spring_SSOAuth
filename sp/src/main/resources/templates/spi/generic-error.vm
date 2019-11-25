@@ -1,9 +1,4 @@
-##
-## Velocity Template for Generic Errors
-##
-## Velocity context may contain the following properties
-## message - String - the error message
-##
+
 <!DOCTYPE html>
 <html>
 <head>
