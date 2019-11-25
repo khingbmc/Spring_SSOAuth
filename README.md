@@ -110,13 +110,13 @@ sp
 |       |       |   |   SecurityConfiguration.java
 |       |       └───web
 |       |       |   |   ServiceProviderController.java
-|       |       |   SPApplication.java
+|       |       |   |   SPApplication.java
 |       |   └───org/spring/framework/security/saml
 |       └───resources
 |       |   └───templates
 |       |   |   └───spi
-|       |   |       |   generic-error.vm
-|       |   |       |   select-provider.vm
+|       |   |   |   |   generic-error.vm
+|       |   |   |   |   select-provider.vm
 |       |   |   |   data.html
 |       |   |   |   logged-in.html
 |       |   |   |   test.html
