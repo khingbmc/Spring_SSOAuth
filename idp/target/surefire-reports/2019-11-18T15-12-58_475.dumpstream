@@ -1,0 +1,15 @@
+# Created at 2019-11-18T15:13:07.735
+WARNING: An illegal reflective access operation has occurred
+
+# Created at 2019-11-18T15:13:07.736
+WARNING: Illegal reflective access by org.springframework.security.saml.saml2.encrypt.KeyEncryptionMethod (file:/Users/fluke/Documents/SOP/Project/Spring_SSOAuth/idp/target/classes/) to field java.lang.Enum.name
+
+# Created at 2019-11-18T15:13:07.736
+WARNING: Please consider reporting this to the maintainers of org.springframework.security.saml.saml2.encrypt.KeyEncryptionMethod
+
+# Created at 2019-11-18T15:13:07.736
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+
+# Created at 2019-11-18T15:13:07.736
+WARNING: All illegal access operations will be denied in a future release
+

@@ -153,9 +153,16 @@ spring:
                 HffnsgNZROW70P9KbBF/4ejcVX96drpXiA==
         providers:
           - alias: spring-security-saml-sp
-            metadata: http://localhost:8080/saml/sp/metadata
+            metadata: http://35.198.207.177:8080/saml/sp/metadata
             linktext: Spring Security SAML SP
+          - alias: spring-security-test-sp
+            metadata: http://35.198.207.177:8082/saml/sp/metadata
+            linktext: SOPEIEIEIEEIEI
+          - alias: spring-theater-saml-sp
+            metadata: http://theaterapi-env.ztbw4evbna.ap-southeast-1.elasticbeanstalk.com/saml/sp/metadata
+            linktext: theater
           - alias: simplesamlphp
             metadata: http://simplesaml-for-spring-saml.cfapps.io/module.php/saml/sp/metadata.php/default-sp
             link-text: Simple SAML PHP SP
+
 
