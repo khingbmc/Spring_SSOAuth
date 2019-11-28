@@ -154,10 +154,13 @@ spring:
         providers:
           - alias: spring-security-saml-sp
             metadata: http://35.198.207.177:8080/saml/sp/metadata
-            linktext: Spring Security SAML SP
-          - alias: sop-test-Testing
+            link-text: Spring Security SAML SP
+          - alias: spring-security-test-sp
             metadata: http://35.198.207.177:8082/saml/sp/metadata
-            linktext: SOPEIEIEIEEIEI
+            link-text: SOPEIEIEIEEIEI
+          - alias: spring-security-theater-sp
+            metadata: http://34.87.24.186:8080/saml/sp/metadata
+            link-text: Theater SP
           - alias: simplesamlphp
             metadata: http://simplesaml-for-spring-saml.cfapps.io/module.php/saml/sp/metadata.php/default-sp
             link-text: Simple SAML PHP SP
