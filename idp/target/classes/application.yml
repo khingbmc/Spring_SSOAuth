@@ -153,6 +153,7 @@ spring:
                 HffnsgNZROW70P9KbBF/4ejcVX96drpXiA==
         providers:
           - alias: spring-security-saml-sp
+<<<<<<< HEAD
             metadata: http://35.198.207.177:8080/saml/sp/metadata
             link-text: Spring Security SAML SP
           - alias: spring-security-test-sp
@@ -161,8 +162,10 @@ spring:
           - alias: spring-security-theater-sp
             metadata: http://34.87.24.186:8080/saml/sp/metadata
             link-text: Theater SP
+=======
+            metadata: http://localhost:8080/saml/sp/metadata
+            linktext: Spring Security SAML SP
+>>>>>>> 56ca2f7106ca1f50d64d879de036c95b3b009f47
           - alias: simplesamlphp
             metadata: http://simplesaml-for-spring-saml.cfapps.io/module.php/saml/sp/metadata.php/default-sp
             link-text: Simple SAML PHP SP
-
-
